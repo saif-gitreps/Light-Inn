@@ -1,19 +1,27 @@
 import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
+import { Hotel } from "lucide-react";
 
 function Header() {
    return (
       <div className="bg-green-700 py-6">
          <div className="container mx-auto flex justify-between">
-            <span className="text-2xl text-white font-semibold tracking-tighter">
+            <span className="text-2xl text-white font-semibold tracking-tighter flex items-center">
+               <Hotel size={24} />
                <Link to="/">Light Inn</Link>
             </span>
-            <span className="flex space-x-2">
-               <Link to="/login" className="text-white">
-                  Login
-               </Link>
-               <Link to="/register" className="text-white">
-                  Register
-               </Link>
+            <span className="flex space-x-1">
+               <Button variant="link" asChild className="p-2">
+                  <Link to="/sign-in" className="text-white">
+                     Sign in
+                  </Link>
+               </Button>
+
+               <Button variant="link" asChild className="p-2">
+                  <Link to="/sign-up" className="text-white">
+                     Sign up
+                  </Link>
+               </Button>
             </span>
          </div>
       </div>
