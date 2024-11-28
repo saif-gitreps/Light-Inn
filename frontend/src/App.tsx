@@ -1,6 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./layouts/Layout";
+import SignUp from "./pages/SignUp";
 
 function App() {
    return (
@@ -19,6 +20,14 @@ function App() {
                element={
                   <Layout>
                      <h1>Search</h1>
+                  </Layout>
+               }
+            />
+            <Route
+               path="/sign-up"
+               element={
+                  <Layout>
+                     <SignUp />
                   </Layout>
                }
             />

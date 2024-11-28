@@ -53,7 +53,11 @@ export default {
          },
       },
       container: {
-         padding: "10rem",
+         padding: {
+            DEFAULT: "1rem",
+            sm: "2rem",
+            md: "10rem",
+         },
       },
    },
    plugins: [require("tailwindcss-animate")],

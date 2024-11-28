@@ -4,6 +4,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import { requestIdHandler } from "./middlewares/req-handler";
 import userRoutes from "./routes/user.route";
+import authRoutes from "./routes/auth.route";
 
 mongoose.connect(process.env.MONGODB_URI as string);
 
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 

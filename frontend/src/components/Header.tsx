@@ -4,9 +4,9 @@ import { Hotel } from "lucide-react";
 
 function Header() {
    return (
-      <div className="bg-green-700 py-6">
+      <div className="bg-green-700 py-2">
          <div className="container mx-auto flex justify-between">
-            <span className="text-2xl text-white font-semibold tracking-tighter flex items-center">
+            <span className="text-2xl text-white font-semibold tracking-tighter flex items-center hover:opacity-80 underline">
                <Hotel size={24} />
                <Link to="/">Light Inn</Link>
             </span>
