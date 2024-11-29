@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
 import { Button } from "../components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import * as apiServices from "../api-services";
 import { useAppContext } from "../contexts/AppContext";
 
-export type RegisterFormData = {
+export type SignUpFormData = {
    email: string;
    password: string;
    confirmPassword: string;
@@ -16,6 +16,8 @@ export type RegisterFormData = {
 };
 
 function SignUp() {
+   const queryClient = useQueryClient();
+   const navigate = useNavigate();
    const { showToast } = useAppContext();
 
    const {
@@ -23,11 +25,15 @@ function SignUp() {
       watch,
       handleSubmit,
       formState: { errors },
-   } = useForm<RegisterFormData>();
+   } = useForm<SignUpFormData>();
 
    const mutation = useMutation(apiServices.signUp, {
-      onSuccess: () => {
+      onSuccess: async () => {
          showToast({ message: "Account created successfully!", type: "SUCCESS" });
+
+         await queryClient.invalidateQueries("validateToken");
+
+         navigate("/");
       },
       onError: (error: Error) => {
          showToast({ message: error.message, type: "ERROR" });
@@ -44,11 +50,11 @@ function SignUp() {
             <h1 className="text-3xl font-bold">Create a new account</h1>
             <p className="text-lg font-normal">
                Already have an account?{" "}
-               <Button variant="outline">
+               <Button variant="outline" type="button" asChild>
                   <Link to="/sign-in" className="text-lg">
                      Sign in
+                     <ArrowRight size={24} />
                   </Link>
-                  <ArrowRight size={24} />
                </Button>
             </p>
          </div>
@@ -95,7 +101,7 @@ function SignUp() {
             </label>
          </div>
 
-         <label htmlFor="firstName" className="text-gray-700 text-md font-bold flex-1">
+         <label htmlFor="email" className="text-gray-700 text-md font-bold flex-1">
             Email:
             <input
                type="email"

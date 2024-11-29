@@ -5,11 +5,18 @@ import mongoose from "mongoose";
 import { requestIdHandler } from "./middlewares/req-handler";
 import userRoutes from "./routes/user.route";
 import authRoutes from "./routes/auth.route";
+import cookieParser from "cookie-parser";
 
 mongoose.connect(process.env.MONGODB_URI as string);
 
 const app = express();
-app.use(cors());
+app.use(cookieParser());
+app.use(
+   cors({
+      origin: process.env.FRONTEND_URL,
+      credentials: true,
+   })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestIdHandler as express.RequestHandler);
