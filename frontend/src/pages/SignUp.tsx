@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useMutation } from "react-query";
 import * as apiServices from "../api-services";
+import { useAppContext } from "../contexts/AppContext";
 
 export type RegisterFormData = {
    email: string;
@@ -15,6 +16,8 @@ export type RegisterFormData = {
 };
 
 function SignUp() {
+   const { showToast } = useAppContext();
+
    const {
       register,
       watch,
@@ -24,10 +27,10 @@ function SignUp() {
 
    const mutation = useMutation(apiServices.signUp, {
       onSuccess: () => {
-         alert("Account created successfully");
+         showToast({ message: "Account created successfully!", type: "SUCCESS" });
       },
       onError: (error: Error) => {
-         alert(error.message);
+         showToast({ message: error.message, type: "ERROR" });
       },
    });
 
@@ -105,56 +108,58 @@ function SignUp() {
             {errors.email && <span className="text-red-600">{errors.email.message}</span>}
          </label>
 
-         <label htmlFor="password" className="text-gray-700 text-md font-bold flex-1">
-            Password:
-            <input
-               type="password"
-               id="password"
-               className="border w-full border-gray-400 rounded p-2 font-normal"
-               {...register("password", {
-                  required: "Password is required",
+         <div className="flex flex-col md:flex-row gap-5">
+            <label htmlFor="password" className="text-gray-700 text-md font-bold flex-1">
+               Password:
+               <input
+                  type="password"
+                  id="password"
+                  className="border w-full border-gray-400 rounded p-2 font-normal"
+                  {...register("password", {
+                     required: "Password is required",
 
-                  minLength: {
-                     value: 6,
-                     message: "Password should be at least 6 characters",
-                  },
-               })}
-            />
-            {errors.password && (
-               <span className="text-red-600">{errors.password.message}</span>
-            )}
-         </label>
+                     minLength: {
+                        value: 6,
+                        message: "Password should be at least 6 characters",
+                     },
+                  })}
+               />
+               {errors.password && (
+                  <span className="text-red-600">{errors.password.message}</span>
+               )}
+            </label>
 
-         <label
-            htmlFor="confirmPassword"
-            className="text-gray-700 text-md font-bold flex-1"
-         >
-            Confirm Password:
-            <input
-               type="password"
-               id="confirmPassword"
-               className="border w-full border-gray-400 rounded p-2 font-normal"
-               {...register("confirmPassword", {
-                  validate: (value) => {
-                     if (!value) {
-                        return "Please confirm your password";
-                     } else if (watch("password") !== value) {
-                        return "Passwords do not match";
-                     }
-                  },
+            <label
+               htmlFor="confirmPassword"
+               className="text-gray-700 text-md font-bold flex-1"
+            >
+               Confirm Password:
+               <input
+                  type="password"
+                  id="confirmPassword"
+                  className="border w-full border-gray-400 rounded p-2 font-normal"
+                  {...register("confirmPassword", {
+                     validate: (value) => {
+                        if (!value) {
+                           return "Please confirm your password";
+                        } else if (watch("password") !== value) {
+                           return "Passwords do not match";
+                        }
+                     },
 
-                  required: "Password is required",
+                     required: "Password is required",
 
-                  minLength: {
-                     value: 6,
-                     message: "Password should be at least 6 characters",
-                  },
-               })}
-            />
-            {errors.confirmPassword && (
-               <span className="text-red-600">{errors.confirmPassword.message}</span>
-            )}
-         </label>
+                     minLength: {
+                        value: 6,
+                        message: "Password should be at least 6 characters",
+                     },
+                  })}
+               />
+               {errors.confirmPassword && (
+                  <span className="text-red-600">{errors.confirmPassword.message}</span>
+               )}
+            </label>
+         </div>
 
          <Button type="submit" className="w-36 text-lg">
             Submit
