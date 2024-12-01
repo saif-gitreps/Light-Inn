@@ -48,7 +48,7 @@ function SignIn() {
                Do not have an account?{" "}
                <Button variant="outline" type="button" asChild>
                   <Link to="/sign-up" className="text-lg">
-                     Sign in
+                     Sign up
                      <ArrowRight size={24} />
                   </Link>
                </Button>
