@@ -24,7 +24,7 @@ function SignUp() {
       register,
       watch,
       handleSubmit,
-      formState: { errors },
+      formState: { errors, isLoading, isSubmitting },
    } = useForm<SignUpFormData>();
 
    const mutation = useMutation(apiServices.signUp, {
@@ -167,7 +167,11 @@ function SignUp() {
             </label>
          </div>
 
-         <Button type="submit" className="w-36 text-lg">
+         <Button
+            type="submit"
+            className="w-36 text-lg"
+            disabled={isLoading || isSubmitting}
+         >
             Submit
          </Button>
       </form>

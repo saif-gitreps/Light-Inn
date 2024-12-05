@@ -3,8 +3,12 @@ import "./App.css";
 import Layout from "./layouts/Layout";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import AddHotel from "./pages/AddHotel";
+import { useAppContext } from "./contexts/AppContext";
 
 function App() {
+   const { isAuth } = useAppContext();
+
    return (
       <Router>
          <Routes>
@@ -41,6 +45,17 @@ function App() {
                   </Layout>
                }
             />
+
+            {isAuth && (
+               <Route
+                  path="/add-hotel"
+                  element={
+                     <Layout>
+                        <AddHotel />
+                     </Layout>
+                  }
+               />
+            )}
             <Route
                path="*"
                element={

@@ -20,7 +20,7 @@ function SignIn() {
    const {
       register,
       handleSubmit,
-      formState: { errors },
+      formState: { errors, isSubmitting, isLoading },
    } = useForm<SignInFormData>();
 
    const mutation = useMutation(apiServices.signIn, {
@@ -92,7 +92,11 @@ function SignIn() {
             </label>
          </div>
 
-         <Button type="submit" className="w-36 text-lg">
+         <Button
+            type="submit"
+            className="w-36 text-lg"
+            disabled={isLoading || isSubmitting}
+         >
             Submit
          </Button>
       </form>
