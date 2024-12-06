@@ -1,10 +1,10 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
 import userRoutes from "./routes/user.route";
 import authRoutes from "./routes/auth.route";
-import userHotelRoutes from "./routes/user-hotel.routes";
+import myHotelRoutes from "./routes/my-hotel.routes";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 // import path from "path";
@@ -35,7 +35,14 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/user-hotels", userHotelRoutes);
+app.use("/api/my-hotels", myHotelRoutes);
+
+/*
+   app.get("*", (req: Request, res: Response): any => {
+      res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
+   });
+   
+*/
 
 const PORT = process.env.PORT || 5000;
 

@@ -22,11 +22,7 @@ function SignOutButton() {
    });
 
    return (
-      <Button
-         onClick={() => mutation.mutate()}
-         variant="link"
-         className="p-2 text-white hover:text-red-500"
-      >
+      <Button onClick={() => mutation.mutate()} variant="link" className="p-2 text-white">
          <LogOut className="hidden sm:block" /> Sign out
       </Button>
    );

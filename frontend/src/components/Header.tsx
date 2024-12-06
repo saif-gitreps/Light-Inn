@@ -23,7 +23,7 @@ function Header() {
                      </Button>
                      <Button variant="link" className="p-2 text-white">
                         <Hotel className="hidden sm:block" />
-                        <Link to="/hotels">Hotels</Link>
+                        <Link to="/my-hotels">My Hotels</Link>
                      </Button>
                      <SignOutButton />
                   </>

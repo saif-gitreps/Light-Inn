@@ -1,6 +1,9 @@
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { hotelTypes, hotelFacilities } from "../config/hotel-options";
 import { Button } from "../components/ui/button";
+import { HotelType } from "../../../backend/src/shared/types";
+import { useEffect } from "react";
+import { Trash2 } from "lucide-react";
 
 export type HotelFormData = {
    name: string;
@@ -12,24 +15,36 @@ export type HotelFormData = {
    rating: number;
    facilities: string[];
    imageFiles: FileList;
+   imageUrls: string[];
    adultCount: number;
    childCount: number;
 };
 
 type HotelFormProps = {
+   hotel?: HotelType | undefined;
    onSave: (data: FormData) => void;
    isLoading: boolean;
 };
 
-function HotelForm({ onSave, isLoading }: HotelFormProps) {
+function HotelForm({ hotel, onSave, isLoading }: HotelFormProps) {
    const formMethods = useForm<HotelFormData>();
    const {
       handleSubmit,
+      reset,
       formState: { isSubmitting },
    } = formMethods;
 
+   useEffect(() => {
+      reset(hotel);
+   }, [reset, hotel]);
+
    const onSubmit = handleSubmit((data: HotelFormData) => {
       const formData = new FormData();
+
+      if (hotel) {
+         formData.append("id", hotel._id);
+      }
+
       formData.append("name", data.name);
       formData.append("city", data.city);
       formData.append("country", data.country);
@@ -39,12 +54,20 @@ function HotelForm({ onSave, isLoading }: HotelFormProps) {
       formData.append("rating", data.rating.toString());
       formData.append("adultCount", data.adultCount.toString());
       formData.append("childCount", data.childCount.toString());
+
       data.facilities.forEach((facility, index) => {
          formData.append(`facilities[${index}]`, facility);
       });
+
       Array.from(data.imageFiles).forEach((image) => {
          formData.append("imageFiles", image);
       });
+
+      if (data.imageUrls) {
+         data.imageUrls.forEach((imageUrl, index) => {
+            formData.append(`imageUrls[${index}]`, imageUrl);
+         });
+      }
 
       onSave(formData);
    });
@@ -328,13 +351,46 @@ function ImagesSection() {
    const {
       register,
       formState: { errors },
+      watch,
+      setValue,
    } = useFormContext<HotelFormData>();
+
+   const existingImageUrls = watch("imageUrls");
+
+   const handleDelete = (
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      imageUrl: string
+   ) => {
+      event.preventDefault();
+
+      setValue(
+         "imageUrls",
+         existingImageUrls.filter((url) => url !== imageUrl)
+      );
+   };
 
    return (
       <div>
          <h2 className="text-xl font-bold mb-3">Images</h2>
 
          <div className="flex flex-col gap-4">
+            {existingImageUrls && (
+               <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                  {existingImageUrls.map((imageUrl) => (
+                     <div className="relative group" key={imageUrl}>
+                        <img src={imageUrl} className="min-h-full object-cover " />
+
+                        <div
+                           className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 opacity-0 group-hover:opacity-100"
+                           onClick={(event) => handleDelete(event, imageUrl)}
+                        >
+                           <Trash2 className="stroke-red-500 hover:cursor-pointer" />
+                        </div>
+                     </div>
+                  ))}
+               </div>
+            )}
+
             <input
                type="file"
                id="imageFiles"
@@ -343,15 +399,16 @@ function ImagesSection() {
                className="border w-full border-gray-400 rounded p-2 font-normal"
                {...register("imageFiles", {
                   validate: (images) => {
-                     if (images.length === 0) {
+                     const totalImages = images.length + (existingImageUrls?.length || 0);
+
+                     if (totalImages === 0) {
                         return "Please upload at least one image";
                      }
 
-                     if (images.length > 6) {
+                     if (totalImages > 6) {
                         return "Maximum of 6 images allowed";
                      }
                   },
-                  required: "Please upload at least one image",
                })}
             />
          </div>
