@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/user.route";
 import authRoutes from "./routes/auth.route";
 import myHotelRoutes from "./routes/my-hotel.routes";
+import hotelRoutes from "./routes/hotel.route";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 // import path from "path";
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/my-hotels", myHotelRoutes);
+app.use("/api/hotels", hotelRoutes);
 
 /*
    app.get("*", (req: Request, res: Response): any => {
