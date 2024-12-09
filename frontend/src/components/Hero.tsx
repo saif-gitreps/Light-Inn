@@ -1,6 +1,6 @@
 function Hero() {
    return (
-      <div className="bg-green-800 pb-14 pt-8">
+      <div className="bg-green-800 pb-14 pt-32">
          <div className="container mx-auto flex flex-col gap-2">
             <h1 className="text-5xl text-green-300">Welcome to Light Inn</h1>
             <p className="text-2xl text-white">
