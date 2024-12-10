@@ -5,16 +5,33 @@ import Hotel from "../models/hotel.model";
 import { verifyToken } from "../middlewares/auth.middleware";
 import { body } from "express-validator";
 import { HotelSearchResponse, HotelType } from "../shared/types";
+import { constructSearchQuery } from "../util/search-query-builder";
 
 const router = express.Router();
 
 router.get("/search", async (req: Request, res: Response): Promise<any> => {
    try {
+      const query = constructSearchQuery(req.query);
+
+      let sortOptions = {};
+
+      switch (req.query.sortOption) {
+         case "rating":
+            sortOptions = { rating: -1 };
+            break;
+         case "pricePerNightAsc":
+            sortOptions = { pricePerNight: 1 };
+            break;
+         case "pricePerNightDesc":
+            sortOptions = { pricePerNight: -1 };
+            break;
+      }
+
       const limit = 5;
       const page = parseInt(req.query.page ? req.query.page.toString() : "1");
       const skip = (page - 1) * limit;
 
-      const hotels = await Hotel.find().skip(skip).limit(limit);
+      const hotels = await Hotel.find(query).sort(sortOptions).skip(skip).limit(limit);
 
       const total = await Hotel.countDocuments();
 
