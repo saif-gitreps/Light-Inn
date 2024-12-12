@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { Button } from "../components/ui/button";
 import Pagination from "./Pagination";
+import StarRatingFilter from "../components/StarRatingFilter";
 
 function SearchResult() {
    const search = useSearchContext();
    const [page, setPage] = useState(1);
+   const [selectedStars, setSelectedStars] = useState<string[]>([]);
 
    const searchParams = {
       destination: search.destination,
@@ -19,17 +21,34 @@ function SearchResult() {
       adultCount: search.adultCount,
       childCount: search.childCount,
       page: page.toString(),
+      stars: selectedStars,
    };
 
    const { data: hotelData } = useQuery(["searchHotels", searchParams], () =>
       apiService.searchHotels(searchParams)
    );
 
+   const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const starRating = event.target.value;
+
+      // checking and unchecking operation
+      setSelectedStars((prev) =>
+         event.target.checked
+            ? [...prev, starRating]
+            : prev.filter((star) => star !== starRating)
+      );
+   };
+
    return (
       <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
          <div className="rounded border p-5 h-fit sticky top-10">
             <div className="space-y-5">
                <h3 className="text-lg font-semibold border-b pb-5">Filter by:</h3>
+
+               <StarRatingFilter
+                  selectedStars={selectedStars}
+                  onChange={handleStarsChange}
+               />
             </div>
          </div>
 
@@ -40,6 +59,7 @@ function SearchResult() {
                   {search.destination ? ` in ${search.destination}` : ""}
                </span>
             </div>
+
             {hotelData?.data.map((hotel) => (
                <SearchItemCard hotel={hotel} />
             ))}

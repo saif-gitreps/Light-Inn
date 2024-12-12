@@ -143,6 +143,21 @@ export const searchHotels = async (
    queryParam.append("childCount", searchParams.childCount?.toString() || "");
    queryParam.append("page", searchParams.page || "");
 
+   queryParam.append("maxPrice", searchParams.maxPrice || "");
+   queryParam.append("sortOption", searchParams.sortOption || "");
+
+   searchParams.facilities?.forEach((facility) =>
+      queryParam.append("facilities", facility)
+   );
+
+   searchParams.types?.forEach((type) => queryParam.append("types", type));
+
+   if (typeof searchParams.stars === "string") {
+      queryParam.append("stars", searchParams.stars);
+   } else if (Array.isArray(searchParams.stars)) {
+      searchParams.stars.forEach((star) => queryParam.append("stars", star));
+   }
+
    const response = await fetch(
       `${API_BASE_URL}/api/hotels/search?${queryParam.toString()}`
    );

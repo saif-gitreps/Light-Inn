@@ -35,11 +35,11 @@ export const constructSearchQuery = (queryParams: any) => {
    }
 
    if (queryParams.stars) {
-      const starRatings = Array.isArray(queryParams.stars)
+      const ratings = Array.isArray(queryParams.stars)
          ? queryParams.stars.map((star: string) => parseInt(star))
          : parseInt(queryParams.stars);
 
-      constructedQuery.starRating = { $in: starRatings };
+      constructedQuery.rating = { $in: ratings };
    }
 
    if (queryParams.maxPrice) {
@@ -67,7 +67,7 @@ export const constructSearchQuery = (queryParams: any) => {
          ? queryParams.stars.map((star: string) => parseInt(star))
          : parseInt(queryParams.stars);
 
-      constructedQuery.starRating = { $in: ratings };
+      constructedQuery.rating = { $in: ratings };
    }
 
    if (queryParams.maxPrice) {
