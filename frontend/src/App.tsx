@@ -8,6 +8,7 @@ import { useAppContext } from "./contexts/AppContext";
 import UserHotels from "./pages/MyHotels";
 import EditHotel from "./pages/EditHotel";
 import SearchResult from "./pages/SearchResult";
+import Details from "./pages/Details";
 
 function App() {
    const { isAuth } = useAppContext();
@@ -28,6 +29,14 @@ function App() {
                element={
                   <Layout>
                      <SearchResult />
+                  </Layout>
+               }
+            />
+            <Route
+               path="/detail/:id"
+               element={
+                  <Layout>
+                     <Details />
                   </Layout>
                }
             />

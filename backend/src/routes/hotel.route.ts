@@ -3,7 +3,7 @@ import multer from "multer";
 import cloudinary from "cloudinary";
 import Hotel from "../models/hotel.model";
 import { verifyToken } from "../middlewares/auth.middleware";
-import { body } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 import { HotelSearchResponse, HotelType } from "../shared/types";
 import { constructSearchQuery } from "../util/search-query-builder";
 
@@ -50,5 +50,25 @@ router.get("/search", async (req: Request, res: Response): Promise<any> => {
       res.status(500).send("Internal Server Error");
    }
 });
+
+router.get(
+   "/:id",
+   [param("id").notEmpty().withMessage("Hotel id is required")],
+   async (req: Request, res: Response): Promise<any> => {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty) {
+         return res.status(400).json({ errors: errors.array() });
+      }
+
+      const id = req.params.id.toString();
+
+      try {
+         const hotel = await Hotel.findById(id);
+
+         return res.status(200).json(hotel);
+      } catch (error) {}
+   }
+);
 
 export default router;
