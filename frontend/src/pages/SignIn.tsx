@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../contexts/AppContext";
 import { useForm } from "react-hook-form";
 import { Button } from "../components/ui/button";
@@ -15,6 +15,7 @@ export type SignInFormData = {
 function SignIn() {
    const queryClient = useQueryClient();
    const navigate = useNavigate();
+   const location = useLocation();
    const { showToast } = useAppContext();
 
    const {
@@ -29,7 +30,11 @@ function SignIn() {
 
          await queryClient.invalidateQueries("validateToken");
 
-         navigate("/");
+         if (location.state?.from?.pathname) {
+            navigate(location.state?.from?.pathname);
+         } else {
+            navigate("/");
+         }
       },
       onError: (error: Error) => {
          showToast({ message: error.message, type: "ERROR" });
