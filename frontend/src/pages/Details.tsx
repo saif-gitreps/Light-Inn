@@ -33,7 +33,7 @@ function Detail() {
 
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {hotel.imageUrls.map((image) => (
-               <div className="h-[300px]">
+               <div className="h-[300px]" key={image}>
                   <img
                      src={image}
                      alt={hotel.name}
@@ -48,7 +48,10 @@ function Detail() {
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
                {hotel.facilities.map((facility) => (
-                  <div className="border p-2 rounded text-center bg-gray-100 font-semibold">
+                  <div
+                     key={facility}
+                     className="border p-2 rounded text-center bg-gray-100 font-semibold"
+                  >
                      {facility}
                   </div>
                ))}

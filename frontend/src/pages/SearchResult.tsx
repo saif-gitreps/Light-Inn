@@ -6,7 +6,7 @@ import { HotelType } from "../../../backend/src/shared/types";
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { Button } from "../components/ui/button";
-import Pagination from "./Pagination";
+import Pagination from "../components/Pagination";
 import StarRatingFilter from "../components/filter-components/StarRatingFilter";
 import HotelTypesFilter from "../components/filter-components/HotelTypeFilter";
 import FacilitiesFilter from "../components/filter-components/FacilitiesFilter";
@@ -118,7 +118,7 @@ function SearchResult() {
             </div>
 
             {hotelData?.data.map((hotel) => (
-               <SearchItemCard hotel={hotel} />
+               <SearchItemCard key={hotel._id} hotel={hotel} />
             ))}
 
             <div>
@@ -150,8 +150,10 @@ function SearchItemCard({ hotel }: { hotel: HotelType }) {
                         <Star className="fill-yellow-400" />
                      ))}
                   </span>
+
                   <span className="ml-1 text-sm font-bold">{hotel.type}</span>
                </div>
+
                <Link
                   to={`/detail/${hotel._id}`}
                   className="text-2xl font-bold cursor-pointer hover:opacity-80"
@@ -167,17 +169,22 @@ function SearchItemCard({ hotel }: { hotel: HotelType }) {
             <div className="grid grid-cols-2 items-end whitespace-nowrap">
                <div className="flex gap-1 items-center">
                   {hotel.facilities.slice(0, 3).map((facility) => (
-                     <span className="bg-slate-300 p-2 rounded-lg font-bold text-xs whitespace-nowrap">
+                     <span
+                        key={facility}
+                        className="bg-slate-300 p-2 rounded-lg font-bold text-xs whitespace-nowrap"
+                     >
                         {facility}
                      </span>
                   ))}
+
                   <span className="text-sm">
                      {hotel.facilities.length > 3 &&
                         `+${hotel.facilities.length - 3} more`}
                   </span>
                </div>
                <div className="flex flex-col items-end gap-1">
-                  <span className="font-bold">£{hotel.pricePerNight} per night</span>
+                  <span className="font-bold">${hotel.pricePerNight} per night</span>
+
                   <Button size="lg">
                      <Link to={`/detail/${hotel._id}`}>Check details</Link>
                   </Button>

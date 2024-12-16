@@ -2,10 +2,28 @@ import express, { Request, Response } from "express";
 import { User } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
+import { verifyToken } from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
 // TODO : Refactor the validation logic into a separate file
+
+router.get("/me", verifyToken, async (req: Request, res: Response): Promise<any> => {
+   const userId = req.userId;
+
+   try {
+      const user = await User.findById(userId).select("-password");
+
+      if (!user) {
+         return res.status(404).json({ message: "No such user" });
+      }
+
+      return res.status(201).json(user);
+   } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong" });
+   }
+});
 
 router.post(
    "/sign-up",

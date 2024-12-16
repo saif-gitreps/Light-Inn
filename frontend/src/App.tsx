@@ -9,6 +9,7 @@ import UserHotels from "./pages/MyHotels";
 import EditHotel from "./pages/EditHotel";
 import SearchResult from "./pages/SearchResult";
 import Details from "./pages/Details";
+import Booking from "./pages/Booking";
 
 function App() {
    const { isAuth } = useAppContext();
@@ -60,6 +61,14 @@ function App() {
 
             {isAuth && (
                <>
+                  <Route
+                     path="/hotel/:id/booking"
+                     element={
+                        <Layout>
+                           <Booking />
+                        </Layout>
+                     }
+                  />
                   <Route
                      path="/add-hotel"
                      element={

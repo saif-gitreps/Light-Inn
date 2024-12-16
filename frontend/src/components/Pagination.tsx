@@ -1,4 +1,4 @@
-import { Button } from "../components/ui/button";
+import { Button } from "./ui/button";
 
 export type PaginationProps = {
    page: number;
@@ -16,7 +16,10 @@ function Pagination({ page, pages, onPageChange }: PaginationProps) {
       <div className="flex justify-center">
          <ul className="flex border ">
             {pageNumbers.map((pageNumber) => (
-               <li className={`px-2 py-1 ${page === pageNumber}? "bg-gray-200" : ""`}>
+               <li
+                  key={pageNumber}
+                  className={`px-2 py-1 ${page === pageNumber}? "bg-gray-200" : ""`}
+               >
                   <Button variant="outline" onClick={() => onPageChange(pageNumber)}>
                      {pageNumber}
                   </Button>
