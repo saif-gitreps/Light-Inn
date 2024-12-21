@@ -5,9 +5,12 @@ import { useSearchContext } from "../contexts/SearchContext";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { HotelType } from "../../../backend/src/shared/types";
+import { Elements } from "@stripe/react-stripe-js";
+import { useAppContext } from "../contexts/AppContext";
 
 function Booking() {
    const search = useSearchContext();
+   const { stripePromise } = useAppContext();
    const { id } = useParams();
    const { data: hotel } = useQuery(
       "fetchHotelById",
@@ -30,6 +33,14 @@ function Booking() {
       }
    }, [search.checkIn, search.checkOut]);
 
+   const { data: paymentIntent } = useQuery(
+      "createPaymentIntent",
+      () => apiServices.createPaymentIntent(id as string, numberOfNights.toString()),
+      {
+         enabled: !!id && numberOfNights > 0,
+      }
+   );
+
    return (
       <div className="grid md:grid-cols-[1fr_2fr]">
          {hotel && (
@@ -43,7 +54,16 @@ function Booking() {
             />
          )}
 
-         {currentUser && <BookingForm currentUser={currentUser} />}
+         {currentUser && paymentIntent && (
+            <Elements
+               stripe={stripePromise}
+               options={{
+                  clientSecret: paymentIntent.clientSecret,
+               }}
+            >
+               <BookingForm currentUser={currentUser} paymentIntent={paymentIntent} />
+            </Elements>
+         )}
       </div>
    );
 }
