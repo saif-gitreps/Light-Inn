@@ -37,12 +37,10 @@ test("should show hotel detail", async ({ page }) => {
    await expect(page.getByRole("button", { name: "Book for" })).toBeVisible();
 });
 
-/*
-
 test("should book hotel", async ({ page }) => {
    await page.goto(UI_URL);
 
-   await page.getByPlaceholder("Where are you going?").fill("Dublin");
+   await page.getByPlaceholder("Your destination?").fill("Dublin");
 
    const date = new Date();
    date.setDate(date.getDate() + 3);
@@ -52,9 +50,9 @@ test("should book hotel", async ({ page }) => {
    await page.getByRole("button", { name: "Search" }).click();
 
    await page.getByText("Dublin Getaways").click();
-   await page.getByRole("button", { name: "Book now" }).click();
+   await page.getByRole("button", { name: "Book for" }).click();
 
-   await expect(page.getByText("Total Cost: £357.00")).toBeVisible();
+   await expect(page.getByText("Total cost")).toBeVisible();
 
    const stripeFrame = page.frameLocator("iframe").first();
    await stripeFrame.locator('[placeholder="Card number"]').fill("4242424242424242");
@@ -62,11 +60,9 @@ test("should book hotel", async ({ page }) => {
    await stripeFrame.locator('[placeholder="CVC"]').fill("242");
    await stripeFrame.locator('[placeholder="ZIP"]').fill("24225");
 
-   await page.getByRole("button", { name: "Confirm Booking" }).click();
-   await expect(page.getByText("Booking Saved!")).toBeVisible();
+   await page.getByRole("button", { name: "Confirm booking" }).click();
+   await expect(page.getByText("Hotel booked successfully!")).toBeVisible();
 
-   await page.getByRole("link", { name: "My Bookings" }).click();
+   await page.getByRole("link", { name: "Booked rooms" }).click();
    await expect(page.getByText("Dublin Getaways")).toBeVisible();
 });
-
-*/

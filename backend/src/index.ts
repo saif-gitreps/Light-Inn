@@ -6,6 +6,7 @@ import userRoutes from "./routes/user.route";
 import authRoutes from "./routes/auth.route";
 import myHotelRoutes from "./routes/my-hotel.routes";
 import hotelRoutes from "./routes/hotel.route";
+import myBookingRoutes from "./routes/my-booking.route";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 // import path from "path";
@@ -38,6 +39,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/my-hotels", myHotelRoutes);
 app.use("/api/hotels", hotelRoutes);
+app.use("/api/my-bookings", myBookingRoutes);
 
 /*
    app.get("*", (req: Request, res: Response): any => {

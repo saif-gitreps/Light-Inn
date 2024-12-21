@@ -10,6 +10,8 @@ import EditHotel from "./pages/EditHotel";
 import SearchResult from "./pages/SearchResult";
 import Details from "./pages/Details";
 import Booking from "./pages/Booking";
+import MyBookings from "./pages/MyBookings";
+import Home from "./pages/Home";
 
 function App() {
    const { isAuth } = useAppContext();
@@ -21,7 +23,7 @@ function App() {
                path="/"
                element={
                   <Layout>
-                     <h1>Home</h1>
+                     <Home />
                   </Layout>
                }
             />
@@ -82,6 +84,14 @@ function App() {
                      element={
                         <Layout>
                            <UserHotels />
+                        </Layout>
+                     }
+                  />
+                  <Route
+                     path="/booked-rooms"
+                     element={
+                        <Layout>
+                           <MyBookings />
                         </Layout>
                      }
                   />
