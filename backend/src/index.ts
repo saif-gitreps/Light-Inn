@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
@@ -47,6 +47,14 @@ app.use("/api/my-bookings", myBookingRoutes);
    });
    
 */
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+   console.error(err.stack);
+
+   res.status(500).send({
+      message: err.message || "Internal server error",
+   });
+});
 
 const PORT = process.env.PORT || 5000;
 
