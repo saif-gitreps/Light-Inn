@@ -14,6 +14,7 @@ type SearchContext = {
       adultCount: number,
       childCount: number
    ) => void;
+   clearSearchValues: () => void;
 };
 
 const SearchContext = createContext<SearchContext | undefined>(undefined);
@@ -62,6 +63,22 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
       if (id) sessionStorage.setItem("id", id);
    };
 
+   const clearSearchValues = () => {
+      setDestination("");
+      setCheckIn(new Date());
+      setCheckOut(new Date());
+      setAdultCount(1);
+      setChildCount(0);
+      setId("");
+
+      sessionStorage.removeItem("destination");
+      sessionStorage.removeItem("checkIn");
+      sessionStorage.removeItem("checkOut");
+      sessionStorage.removeItem("adultCount");
+      sessionStorage.removeItem("childCount");
+      sessionStorage.removeItem("id");
+   };
+
    return (
       <SearchContext.Provider
          value={{
@@ -72,6 +89,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
             childCount,
             id,
             saveSearchValues,
+            clearSearchValues,
          }}
       >
          {children}

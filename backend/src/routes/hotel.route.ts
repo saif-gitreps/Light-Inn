@@ -4,13 +4,15 @@ import { param } from "express-validator";
 import {
    addBooking,
    createBookingPaymentIntent,
+   deleteBooking,
    fetchHotelById,
    fetchHotels,
+   search,
 } from "../controllers/hotel.controller";
 
 const router = express.Router();
 
-router.get("/search");
+router.get("/search", search);
 
 router.get("/", fetchHotels);
 
@@ -23,5 +25,7 @@ router.get(
 router.post("/:id/bookings/payment-intent", verifyToken, createBookingPaymentIntent);
 
 router.post("/:id/bookings", verifyToken, addBooking);
+
+router.delete("/:id/bookings/:bookingId", verifyToken, deleteBooking);
 
 export default router;

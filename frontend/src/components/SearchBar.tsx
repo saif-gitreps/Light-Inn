@@ -4,8 +4,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
+import { Search, X } from "lucide-react";
 
-const SearchBar = () => {
+function SearchBar() {
    const navigate = useNavigate();
    const search = useSearchContext();
 
@@ -28,7 +29,7 @@ const SearchBar = () => {
    return (
       <form
          onSubmit={handleSubmit}
-         className="mb-8 absolute p-1 bg-white border rounded shadow-md grid grid-cols-2 md:grid-cols-3 md:flex items-center gap-1 justify-center"
+         className="p-1 bg-white border rounded shadow-md grid grid-cols-2 sm:grid-cols-3 lg:flex items-center gap-1 justify-center"
       >
          <div className="flex flex-row items-center flex-1 bg-white p-2 border rounded">
             <input
@@ -64,7 +65,7 @@ const SearchBar = () => {
             </label>
          </div>
 
-         <div className="">
+         <div className="flex-1">
             <DatePicker
                selected={checkIn}
                onChange={(date) => setCheckIn(date as Date)}
@@ -75,11 +76,11 @@ const SearchBar = () => {
                maxDate={maxDate}
                dateFormat="dd/MM/yyyy"
                placeholderText="Check-in Date"
-               className="min-w-full bg-white p-2 focus:outline-none border rounded"
-               wrapperClassName="min-w-full"
+               className="w-full bg-white p-2 focus:outline-none border rounded"
+               wrapperClassName="w-full"
             />
          </div>
-         <div className="">
+         <div className="flex-1">
             <DatePicker
                selected={checkOut}
                onChange={(date) => setCheckOut(date as Date)}
@@ -90,16 +91,26 @@ const SearchBar = () => {
                dateFormat="dd/MM/yyyy"
                maxDate={maxDate}
                placeholderText="Check-out Date"
-               className="min-w-full bg-white p-2 focus:outline-none border rounded"
-               wrapperClassName="min-w-full"
+               className="w-full bg-white p-2 focus:outline-none border rounded"
+               wrapperClassName="w-full"
             />
          </div>
+
          <div className="flex-1">
-            <Button className="w-1/2">Search</Button>
-            <Button className="w-1/2">Clear</Button>
+            <Button className="w-1/2" variant="outline" type="submit">
+               <Search size={24} />
+            </Button>
+            <Button
+               className="w-1/2"
+               variant="outline"
+               type="button"
+               onClick={() => search.clearSearchValues}
+            >
+               <X size={24} className="stroke-red-600" />
+            </Button>
          </div>
       </form>
    );
-};
+}
 
 export default SearchBar;

@@ -142,3 +142,21 @@ export const addBooking = asyncHandler(
       return res.status(201).json(booking);
    }
 );
+
+export const deleteBooking = asyncHandler(
+   async (req: Request, res: Response): Promise<any> => {
+      const hotel = await Hotel.findById(req.params.id);
+
+      if (!hotel) {
+         return res.status(404).json({ message: "Hotel not found" });
+      }
+
+      hotel.bookings = hotel.bookings.filter(
+         (booking) => booking._id.toString() !== req.params.bookingId
+      );
+
+      await hotel.save();
+
+      return res.status(200).json({ message: "Booking deleted" });
+   }
+);

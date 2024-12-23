@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 import * as apiServices from "../api-services";
 import { HotelType } from "../../../backend/src/shared/types";
 import { Link } from "react-router-dom";
+import Hero from "../components/Hero";
 
 function Home() {
    const { data: hotels } = useQuery("fetchQuery", () => apiServices.fetchHotels());
@@ -11,6 +12,7 @@ function Home() {
 
    return (
       <div className="space-y-3">
+         <Hero />
          <h2 className="text-3xl font-bold">Latest Destinations</h2>
          <p>Most recent desinations added by our hosts</p>
          <div className="grid gap-4">

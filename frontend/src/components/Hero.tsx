@@ -1,10 +1,12 @@
 function Hero() {
    return (
-      <div className="bg-green-800 pb-14 pt-32">
-         <div className="container mx-auto flex flex-col gap-2">
-            <h1 className="text-5xl text-green-300">Welcome to Light Inn</h1>
-            <p className="text-2xl text-white">
-               The best place to find a room for your next trip..
+      <div className="pb-14 pt-16">
+         <div className="mx-auto flex flex-col gap-2 text-center">
+            <h1 className="text-5xl">
+               Welcome to <span className="font-bold">Light Inn.</span>{" "}
+            </h1>
+            <p className="text-2xl">
+               The best place to find a room to stay for your next trip..
             </p>
          </div>
       </div>
