@@ -1,17 +1,18 @@
-import express, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { asyncHandler } from "../util/async-handler";
-import ApiError from "../util/api-error";
 import ApiResponse from "../util/api-response";
 
 export const signIn = asyncHandler(async (req: Request, res: Response): Promise<any> => {
    const errors = validationResult(req);
 
    if (!errors.isEmpty()) {
-      return new ApiError(400, "Invalid credentials", errors.array());
+      return res
+         .status(200)
+         .json(new ApiResponse(400, { errors: errors.array() }, "Validation failed"));
    }
 
    const { email, password } = req.body;
@@ -50,24 +51,15 @@ export const signIn = asyncHandler(async (req: Request, res: Response): Promise<
       maxAge: 86400000,
    });
 
-   return res.status(200).json(
-      new ApiResponse(200, {
-         userId: user._id,
-         email: user.email,
-      })
-   );
+   return res.status(200).json({
+      userId: user._id,
+   });
 });
 
 export const validateToken = asyncHandler((req: Request, res: Response): any => {
-   return res.status(200).json(
-      new ApiResponse(
-         200,
-         {
-            userId: req.body.userId,
-         },
-         "Token is valid"
-      )
-   );
+   return res.status(200).json({
+      userId: req.userId,
+   });
 });
 
 export const logout = asyncHandler((req: Request, res: Response): any => {
