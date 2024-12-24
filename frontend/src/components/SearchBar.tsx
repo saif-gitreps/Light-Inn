@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 
 function SearchBar() {
    const navigate = useNavigate();
@@ -20,6 +20,15 @@ function SearchBar() {
       event.preventDefault();
       search.saveSearchValues(destination, checkIn, checkOut, adultCount, childCount);
       navigate("/search");
+   };
+
+   const handleClear = () => {
+      search.clearSearchValues();
+      setDestination("");
+      setCheckIn(new Date());
+      setCheckOut(new Date());
+      setAdultCount(1);
+      setChildCount(0);
    };
 
    const minDate = new Date();
@@ -74,12 +83,15 @@ function SearchBar() {
                endDate={checkOut}
                minDate={minDate}
                maxDate={maxDate}
+               showDateSelect={false}
                dateFormat="dd/MM/yyyy"
                placeholderText="Check-in Date"
                className="w-full bg-white p-2 focus:outline-none border rounded"
+               showIcon
                wrapperClassName="w-full"
             />
          </div>
+
          <div className="flex-1">
             <DatePicker
                selected={checkOut}
@@ -92,21 +104,22 @@ function SearchBar() {
                maxDate={maxDate}
                placeholderText="Check-out Date"
                className="w-full bg-white p-2 focus:outline-none border rounded"
+               showIcon
                wrapperClassName="w-full"
             />
          </div>
 
-         <div className="flex-1">
+         <div className="flex-1 sm:flex justify-center">
             <Button className="w-1/2" variant="outline" type="submit">
-               <Search size={24} />
+               <Search size={42} className="" />
             </Button>
             <Button
                className="w-1/2"
                variant="outline"
                type="button"
-               onClick={() => search.clearSearchValues}
+               onClick={handleClear}
             >
-               <X size={24} className="stroke-red-600" />
+               Reset
             </Button>
          </div>
       </form>

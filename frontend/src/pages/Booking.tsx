@@ -12,14 +12,18 @@ function Booking() {
    const search = useSearchContext();
    const { stripePromise } = useAppContext();
    const { id } = useParams();
-   const { data: hotel } = useQuery(
+
+   const { data: hotel, isLoading: isHotelLoading } = useQuery(
       "fetchHotelById",
       () => apiServices.fetchHotelById(id as string),
       {
          enabled: !!id,
       }
    );
-   const { data: currentUser } = useQuery("currentUser", apiServices.fetchCurrentUser);
+   const { data: currentUser, isLoading: isUserLoading } = useQuery(
+      "currentUser",
+      apiServices.fetchCurrentUser
+   );
 
    const [numberOfNights, setNumberOfNights] = useState<number>(0);
 
@@ -33,7 +37,7 @@ function Booking() {
       }
    }, [search.checkIn, search.checkOut]);
 
-   const { data: paymentIntent } = useQuery(
+   const { data: paymentIntent, isLoading: isPaymentLoading } = useQuery(
       "createPaymentIntent",
       () => apiServices.createPaymentIntent(id as string, numberOfNights.toString()),
       {
@@ -41,8 +45,25 @@ function Booking() {
       }
    );
 
+   const isLoading = isHotelLoading || isUserLoading || isPaymentLoading;
+
+   if (isLoading) {
+      return (
+         <div className="grid md:grid-cols-[1fr_2fr] gap-4">
+            <div className="space-y-4">
+               <div className="h-6 bg-slate-200 rounded animate-pulse w-3/4"></div>
+               <div className="h-24 bg-slate-200 rounded animate-pulse"></div>
+               <div className="h-12 bg-slate-200 rounded animate-pulse"></div>
+               <div className="h-12 bg-slate-200 rounded animate-pulse"></div>
+            </div>
+
+            <div className="h-80 bg-slate-200 rounded animate-pulse"></div>
+         </div>
+      );
+   }
+
    return (
-      <div className="grid md:grid-cols-[1fr_2fr]">
+      <div className="grid md:grid-cols-[1fr_2fr] gap-4">
          {hotel && (
             <BookingDetailSummary
                checkIn={search.checkIn}

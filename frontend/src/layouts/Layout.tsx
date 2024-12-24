@@ -9,7 +9,7 @@ function Layout({ children }: LayoutProps) {
    return (
       <div className="flex flex-col min-h-screen">
          <Header />
-         <main className="container mx-auto py-16 flex-1">{children}</main>
+         <main className="container mx-auto pt-20 pb-16 flex-1">{children}</main>
          <Footer />
       </div>
    );

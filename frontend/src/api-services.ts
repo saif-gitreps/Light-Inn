@@ -151,29 +151,32 @@ export type SearchParams = {
 };
 
 export const searchHotels = async (
-   searchParams: SearchParams
+   searchParams: SearchParams | null
 ): Promise<HotelSearchResponse> => {
    const queryParam = new URLSearchParams();
-   queryParam.append("destination", searchParams.destination || "");
-   queryParam.append("checkIn", searchParams.checkIn || "");
-   queryParam.append("checkOut", searchParams.checkOut || "");
-   queryParam.append("adultCount", searchParams.adultCount?.toString() || "");
-   queryParam.append("childCount", searchParams.childCount?.toString() || "");
-   queryParam.append("page", searchParams.page || "");
 
-   queryParam.append("maxPrice", searchParams.maxPrice || "");
-   queryParam.append("sortOption", searchParams.sortOption || "");
+   if (searchParams) {
+      queryParam.append("destination", searchParams.destination || "");
+      queryParam.append("checkIn", searchParams.checkIn || "");
+      queryParam.append("checkOut", searchParams.checkOut || "");
+      queryParam.append("adultCount", searchParams.adultCount?.toString() || "");
+      queryParam.append("childCount", searchParams.childCount?.toString() || "");
+      queryParam.append("page", searchParams.page || "");
 
-   searchParams.facilities?.forEach((facility) =>
-      queryParam.append("facilities", facility)
-   );
+      queryParam.append("maxPrice", searchParams.maxPrice || "");
+      queryParam.append("sortOption", searchParams.sortOption || "");
 
-   searchParams.types?.forEach((type) => queryParam.append("types", type));
+      searchParams.facilities?.forEach((facility) =>
+         queryParam.append("facilities", facility)
+      );
 
-   if (typeof searchParams.stars === "string") {
-      queryParam.append("stars", searchParams.stars);
-   } else if (Array.isArray(searchParams.stars)) {
-      searchParams.stars.forEach((star) => queryParam.append("stars", star));
+      searchParams.types?.forEach((type) => queryParam.append("types", type));
+
+      if (typeof searchParams.stars === "string") {
+         queryParam.append("stars", searchParams.stars);
+      } else if (Array.isArray(searchParams.stars)) {
+         searchParams.stars.forEach((star) => queryParam.append("stars", star));
+      }
    }
 
    const response = await fetch(

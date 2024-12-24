@@ -3,7 +3,7 @@ import { useSearchContext } from "../contexts/SearchContext";
 import * as apiService from "../api-services";
 import { useState } from "react";
 import { HotelType } from "../../../backend/src/shared/types";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Star } from "lucide-react";
 import { Button } from "../components/ui/button";
 import Pagination from "../components/Pagination";
@@ -13,6 +13,9 @@ import FacilitiesFilter from "../components/filter-components/FacilitiesFilter";
 import PriceFilter from "../components/filter-components/PriceFilter";
 
 function SearchResult() {
+   const location = useLocation();
+   const queryParam = new URLSearchParams(location.search);
+   const isAll = queryParam.get("q");
    const search = useSearchContext();
    const [page, setPage] = useState(1);
    const [selectedStars, setSelectedStars] = useState<string[]>([]);
@@ -35,14 +38,15 @@ function SearchResult() {
       sortOption,
    };
 
-   const { data: hotelData } = useQuery(["searchHotels", searchParams], () =>
-      apiService.searchHotels(searchParams)
-   );
+   const { data: hotelData, isLoading } = useQuery(["searchHotels", searchParams], () => {
+      return isAll
+         ? apiService.searchHotels(null)
+         : apiService.searchHotels(searchParams);
+   });
 
    const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const starRating = event.target.value;
 
-      // checking and unchecking operation
       setSelectedStars((prev) =>
          event.target.checked
             ? [...prev, starRating]
@@ -98,11 +102,13 @@ function SearchResult() {
             </div>
          </div>
 
-         <div className="flex flex-col gap-5 ">
+         <div className="flex flex-col gap-5">
             <div className="flex justify-between items-center">
                <span className="text-xl font-bold">
-                  {hotelData?.pagination.total} Hotels found
-                  {search.destination ? ` in ${search.destination}` : ""}
+                  {isLoading
+                     ? "Loading hotels..."
+                     : `${hotelData?.pagination.total} Hotels found`}
+                  {search.destination && !isLoading ? ` in ${search.destination}` : ""}
                </span>
 
                <select
@@ -117,17 +123,23 @@ function SearchResult() {
                </select>
             </div>
 
-            {hotelData?.data.map((hotel) => (
-               <SearchItemCard key={hotel._id} hotel={hotel} />
-            ))}
+            {isLoading
+               ? Array.from({ length: 3 }).map((_, index) => (
+                    <SearchItemCardSkeleton key={index} />
+                 ))
+               : hotelData?.data.map((hotel) => (
+                    <SearchItemCard key={hotel._id} hotel={hotel} />
+                 ))}
 
-            <div>
-               <Pagination
-                  page={hotelData?.pagination.page || 1}
-                  pages={hotelData?.pagination.pages || 1}
-                  onPageChange={(page) => setPage(page)}
-               />
-            </div>
+            {!isLoading && (
+               <div>
+                  <Pagination
+                     page={hotelData?.pagination.page || 1}
+                     pages={hotelData?.pagination.pages || 1}
+                     onPageChange={(page) => setPage(page)}
+                  />
+               </div>
+            )}
          </div>
       </div>
    );
@@ -146,8 +158,8 @@ function SearchItemCard({ hotel }: { hotel: HotelType }) {
             <div>
                <div className="flex items-center">
                   <span className="flex">
-                     {Array.from({ length: hotel.rating }).map(() => (
-                        <Star className="fill-yellow-400" />
+                     {Array.from({ length: hotel.rating }).map((_, index) => (
+                        <Star key={index} className="fill-yellow-400" />
                      ))}
                   </span>
 
@@ -189,6 +201,25 @@ function SearchItemCard({ hotel }: { hotel: HotelType }) {
                      <Link to={`/detail/${hotel._id}`}>Check details</Link>
                   </Button>
                </div>
+            </div>
+         </div>
+      </div>
+   );
+}
+
+function SearchItemCardSkeleton() {
+   return (
+      <div className="grid grid-cols-1 xl:grid-cols-[2fr_3fr] border border-slate-300 rounded-lg p-8 gap-8 animate-pulse">
+         <div className="w-full h-[300px] bg-gray-300 rounded"></div>
+         <div className="grid grid-rows-[1fr_2fr_1fr] gap-4">
+            <div className="space-y-2">
+               <div className="h-6 w-1/3 bg-gray-300 rounded"></div>
+               <div className="h-8 w-2/3 bg-gray-300 rounded"></div>
+            </div>
+            <div className="h-16 bg-gray-300 rounded"></div>
+            <div className="grid grid-cols-2 gap-4 items-end">
+               <div className="h-8 bg-gray-300 rounded"></div>
+               <div className="h-10 w-1/3 bg-gray-300 rounded self-end"></div>
             </div>
          </div>
       </div>

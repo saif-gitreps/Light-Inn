@@ -10,15 +10,13 @@ function MyHotels() {
       apiServices.fetchMyHotels
    );
 
-   if (!myHotelsData) {
+   if (isLoading) {
+      return <MyHotelCardSkeleton />;
+   }
+
+   if (!myHotelsData || myHotelsData.length === 0) {
       return <div className="text-center">No hotels found.</div>;
    }
-
-   if (isLoading) {
-      return <div className="text-center">Loading...</div>;
-   }
-
-   // TODO: Add a loader here
 
    return (
       <div className="space-y-5">
@@ -32,8 +30,8 @@ function MyHotels() {
             </Button>
          </div>
 
-         <div className="grid grid-col-1 gap-8">
-            {myHotelsData?.map((hotel) => (
+         <div className="grid grid-cols-1 gap-8">
+            {myHotelsData.map((hotel) => (
                <div key={hotel._id} className="border shadow-sm rounded p-5 space">
                   <h2 className="flex justify-between items-center text-xl font-semibold">
                      {hotel.name}
@@ -68,6 +66,34 @@ function MyHotels() {
                         <PersonStanding className="mr-2 stroke-violet-950" />{" "}
                         {hotel.adultCount} adults, {hotel.childCount} children
                      </div>
+                  </div>
+               </div>
+            ))}
+         </div>
+      </div>
+   );
+}
+
+function MyHotelCardSkeleton() {
+   return (
+      <div className="space-y-5">
+         <div className="flex justify-between animate-pulse">
+            <div className="h-8 bg-slate-200 rounded w-1/3"></div>
+            <div className="h-8 bg-slate-200 rounded w-24"></div>
+         </div>
+
+         <div className="grid grid-cols-1 gap-8">
+            {[1, 2, 3].map((index) => (
+               <div
+                  key={index}
+                  className="border shadow-sm rounded p-5 animate-pulse space-y-3"
+               >
+                  <div className="h-6 bg-slate-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-slate-200 rounded w-full"></div>
+                  <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+                     {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="h-10 bg-slate-200 rounded"></div>
+                     ))}
                   </div>
                </div>
             ))}

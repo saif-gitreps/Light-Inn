@@ -71,12 +71,12 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
       setChildCount(0);
       setId("");
 
-      sessionStorage.removeItem("destination");
-      sessionStorage.removeItem("checkIn");
-      sessionStorage.removeItem("checkOut");
-      sessionStorage.removeItem("adultCount");
-      sessionStorage.removeItem("childCount");
-      sessionStorage.removeItem("id");
+      sessionStorage.setItem("destination", "");
+      sessionStorage.setItem("checkIn", new Date().toISOString());
+      sessionStorage.setItem("checkOut", new Date().toISOString());
+      sessionStorage.setItem("adultCount", "1");
+      sessionStorage.setItem("childCount", "0");
+      sessionStorage.setItem("id", "");
    };
 
    return (

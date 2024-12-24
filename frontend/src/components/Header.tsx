@@ -25,11 +25,7 @@ function Header() {
                         Search <Search className="hover:opacity-80" />
                      </Button>
                   </PopoverTrigger>
-                  <PopoverContent
-                     className="w-screen p-1 bg-transparent border-none shadow-none"
-                     side="top"
-                     align="center"
-                  >
+                  <PopoverContent className="w-screen p-1 bg-transparent border-none shadow-none">
                      <div className="container mx-auto">
                         <SearchBar />
                      </div>
