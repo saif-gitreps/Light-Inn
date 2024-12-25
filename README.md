@@ -33,6 +33,7 @@ A full-featured, modern, end-to-end-tested, full-stack web application where use
 -  📁 Seamless integration of data-fetching and mutation API services using **Tanstack React Query**.
 -  🌄 Paginated displays of hotels on the search results page with previous/next navigation.
 -  🚀 Efficient cache management and cache invalidation using **Tanstack React Query**.
+-  🖼️ Media management and storage using **multer** and **Cloudinary services**.
 -  🦥 Lazy loading of images for fast and responsive rendering of bulk images using **React Lazy Load**.
 -  📁 Simple global Auth, Error, Success, and Search query state management using **React Context**.
 -  🥂 Beautiful handling of success and error messages using **Custom Toast Component**.
