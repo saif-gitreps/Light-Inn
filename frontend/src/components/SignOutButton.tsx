@@ -1,16 +1,14 @@
 import { useMutation, useQueryClient } from "react-query";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../contexts/AppContext";
-import * as apiServices from "../api-services";
+import * as authServices from "../services/auth-services";
 
 function SignOutButton() {
    const queryClient = useQueryClient();
-   // const navigate = useNavigate();
    const { showToast } = useAppContext();
 
-   const mutation = useMutation(apiServices.signOut, {
+   const mutation = useMutation(authServices.signOut, {
       onSuccess: async () => {
          await queryClient.invalidateQueries("validateToken");
 
@@ -23,7 +21,8 @@ function SignOutButton() {
 
    return (
       <Button onClick={() => mutation.mutate()} variant="link" className="p-2 text-white">
-         <LogOut className="hidden sm:block" /> Sign out
+         <LogOut />
+         <span className="hidden md:inline">Sign out</span>
       </Button>
    );
 }

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { BookCheck, Hotel, Search } from "lucide-react";
+import { BookCheck, Hotel, House, Search } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "./SignOutButton";
 import SearchBar from "./SearchBar";
@@ -14,15 +14,16 @@ function Header() {
          <div className="container mx-auto flex justify-between">
             <div className="flex items-center space-x-4">
                <span className="text-2xl text-white font-semibold tracking-tighter flex items-center hover:opacity-80 underline">
-                  <Hotel size={26} />
-                  <Link to="/" className="hidden md:inline">
-                     Light Inn
-                  </Link>
+                  <Hotel size={26} className="hidden md:inline" />
+                  <Link to="/">Light Inn</Link>
                </span>
                <Popover>
                   <PopoverTrigger className="flex items-center space-x-1">
-                     <Button variant="link" className="text-white text-lg">
-                        Search <Search className="hover:opacity-80" />
+                     <Button variant="link" className="text-white text-lg" asChild>
+                        <span>
+                           <span className="hidden md:inline">Search</span>
+                           <Search className="hover:opacity-80" />
+                        </span>
                      </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-screen p-1 bg-transparent border-none shadow-none">
@@ -36,25 +37,29 @@ function Header() {
                {isAuth ? (
                   <>
                      <Button variant="link" className="p-2 text-white">
-                        <BookCheck className="hidden sm:block" />
-                        <Link to="/booked-rooms">Booked rooms</Link>
+                        <BookCheck />
+                        <Link to="/booked-rooms" className="hidden sm:block">
+                           Booked rooms
+                        </Link>
                      </Button>
                      <Button variant="link" className="p-2 text-white">
-                        <Hotel className="hidden sm:block" />
-                        <Link to="/my-hotels">My Hotels</Link>
+                        <House />
+                        <Link to="/my-hotels" className="hidden sm:block">
+                           My Hotels
+                        </Link>
                      </Button>
                      <SignOutButton />
                   </>
                ) : (
                   <>
                      <Button variant="link" asChild className="p-2">
-                        <Link to="/sign-in" className="text-white">
+                        <Link to="/sign-in" className="text-white hidden sm:block">
                            Sign in
                         </Link>
                      </Button>
 
                      <Button variant="link" asChild className="p-2">
-                        <Link to="/sign-up" className="text-white">
+                        <Link to="/sign-up" className="text-white hidden sm:block">
                            Sign up
                         </Link>
                      </Button>

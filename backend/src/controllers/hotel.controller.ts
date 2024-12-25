@@ -129,15 +129,17 @@ export const addBooking = asyncHandler(
          userId: req.userId,
       };
 
-      const hotel = await Hotel.findByIdAndUpdate(req.params.id, {
-         $push: { bookings: { booking } },
-      });
+      const hotel = await Hotel.findByIdAndUpdate(
+         req.params.id,
+         {
+            $push: { bookings: booking },
+         },
+         { new: true }
+      );
 
       if (!hotel) {
          return res.status(404).json({ message: "Hotel not found" });
       }
-
-      await hotel.save();
 
       return res.status(201).json(booking);
    }

@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "../components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useMutation, useQueryClient } from "react-query";
-
-import * as apiServices from "../api-services";
+import * as authServices from "../services/auth-services";
 
 export type SignInFormData = {
    email: string;
@@ -24,7 +23,7 @@ function SignIn() {
       formState: { errors, isSubmitting, isLoading },
    } = useForm<SignInFormData>();
 
-   const mutation = useMutation(apiServices.signIn, {
+   const mutation = useMutation(authServices.signIn, {
       onSuccess: async () => {
          showToast({ message: "Welcome back!", type: "SUCCESS" });
 
@@ -102,7 +101,7 @@ function SignIn() {
             className="w-36 text-lg"
             disabled={isLoading || isSubmitting}
          >
-            Submit
+            {isSubmitting ? "Signing in.." : "Sign in"}
          </Button>
       </form>
    );

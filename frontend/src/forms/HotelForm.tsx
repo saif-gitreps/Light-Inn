@@ -75,7 +75,9 @@ function HotelForm({ hotel, onSave, isLoading }: HotelFormProps) {
    return (
       <FormProvider {...formMethods}>
          <form className="space-y-8" onSubmit={onSubmit}>
-            <h1 className="text-3xl font-bold mb-3">Add a new hotel</h1>
+            <h1 className="text-3xl font-bold mb-3">
+               {hotel ? "Update" : "Add a new"} hotel
+            </h1>
 
             <DetailsSection />
             <TypeSection />
@@ -88,7 +90,7 @@ function HotelForm({ hotel, onSave, isLoading }: HotelFormProps) {
                className="w-36 text-lg"
                disabled={isLoading || isSubmitting}
             >
-               Save
+               {isLoading || isSubmitting ? "Saving.." : "Save"}
             </Button>
          </form>
       </FormProvider>

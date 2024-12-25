@@ -3,9 +3,9 @@ import { PaymentIntentResponse, UserType } from "../../../backend/src/shared/typ
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripeCardElement } from "@stripe/stripe-js";
 import { useSearchContext } from "../contexts/SearchContext";
-import { useParams } from "react-router-dom";
-import { useMutation } from "react-query";
-import * as apiServices from "../api-services";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQueryClient } from "react-query";
+import * as bookingServices from "../services/booking-services";
 import { Button } from "../components/ui/button";
 import { useAppContext } from "../contexts/AppContext";
 
@@ -28,11 +28,13 @@ export type BookingFormData = {
 };
 
 function BookingForm({ currentUser, paymentIntent }: BookingFormProps) {
+   const navigate = useNavigate();
    const stripe = useStripe();
    const elements = useElements();
    const search = useSearchContext();
    const { id } = useParams();
    const { showToast } = useAppContext();
+   const queryClient = useQueryClient();
 
    const { handleSubmit, register } = useForm<BookingFormData>({
       defaultValues: {
@@ -49,14 +51,19 @@ function BookingForm({ currentUser, paymentIntent }: BookingFormProps) {
       },
    });
 
-   const { mutate: bookHotelRoom, isLoading } = useMutation(apiServices.bookHotelRoom, {
-      onSuccess: () => {
-         showToast({ message: "Hotel booked successfully!", type: "SUCCESS" });
-      },
-      onError: () => {
-         showToast({ message: "Something went wrong while booking", type: "ERROR" });
-      },
-   });
+   const { mutate: bookHotelRoom, isLoading } = useMutation(
+      bookingServices.bookHotelRoom,
+      {
+         onSuccess: () => {
+            showToast({ message: "Hotel booked successfully!", type: "SUCCESS" });
+            queryClient.invalidateQueries("myBookings");
+            navigate("/booked-rooms");
+         },
+         onError: () => {
+            showToast({ message: "Something went wrong while booking", type: "ERROR" });
+         },
+      }
+   );
 
    const onSubmit = async (formData: BookingFormData) => {
       if (!stripe || !elements) {
@@ -133,7 +140,10 @@ function BookingForm({ currentUser, paymentIntent }: BookingFormProps) {
          </div>
 
          <div className="flex justify-end">
-            <Button disabled={isLoading}>Confirm booking</Button>
+            <Button disabled={isLoading}>
+               {" "}
+               {isLoading ? "Booking.." : "Confirm booking"}
+            </Button>
          </div>
       </form>
    );

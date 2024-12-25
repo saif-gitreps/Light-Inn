@@ -113,9 +113,10 @@ function SearchBar() {
             <Button className="w-1/2" variant="outline" type="submit">
                <Search size={42} className="" />
             </Button>
+
             <Button
                className="w-1/2"
-               variant="outline"
+               variant="destructive"
                type="button"
                onClick={handleClear}
             >

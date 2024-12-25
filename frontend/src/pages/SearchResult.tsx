@@ -1,16 +1,18 @@
 import { useQuery } from "react-query";
 import { useSearchContext } from "../contexts/SearchContext";
-import * as apiService from "../api-services";
+import * as hotelServices from "../services/hotel-services";
 import { useState } from "react";
 import { HotelType } from "../../../backend/src/shared/types";
 import { Link, useLocation } from "react-router-dom";
-import { Star } from "lucide-react";
+import { Settings2, Star } from "lucide-react";
 import { Button } from "../components/ui/button";
 import Pagination from "../components/Pagination";
 import StarRatingFilter from "../components/filter-components/StarRatingFilter";
 import HotelTypesFilter from "../components/filter-components/HotelTypeFilter";
 import FacilitiesFilter from "../components/filter-components/FacilitiesFilter";
 import PriceFilter from "../components/filter-components/PriceFilter";
+import { Popover, PopoverTrigger } from "../components/ui/popover";
+import { PopoverContent } from "@radix-ui/react-popover";
 
 function SearchResult() {
    const location = useLocation();
@@ -40,8 +42,8 @@ function SearchResult() {
 
    const { data: hotelData, isLoading } = useQuery(["searchHotels", searchParams], () => {
       return isAll
-         ? apiService.searchHotels(null)
-         : apiService.searchHotels(searchParams);
+         ? hotelServices.searchHotels(null)
+         : hotelServices.searchHotels(searchParams);
    });
 
    const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +78,42 @@ function SearchResult() {
 
    return (
       <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
-         <div className="rounded border p-5 h-fit sticky top-10">
+         <Popover>
+            <PopoverTrigger className="lg:hidden" asChild>
+               <Button variant="outline">
+                  Filter <Settings2 />
+               </Button>
+            </PopoverTrigger>
+
+            <PopoverContent className="lg:hidden">
+               <div className="rounded border z-50 bg-white shadow-lg p-3">
+                  <h3 className="text-lg font-semibold border-b pb-5">Filter by:</h3>
+                  <div className="p-3 grid grid-cols-2 sm:grid-cols-3">
+                     <StarRatingFilter
+                        selectedStars={selectedStars}
+                        onChange={handleStarsChange}
+                     />
+
+                     <HotelTypesFilter
+                        selectedHotelTypes={selectedHotelTypes}
+                        onChange={handleHotelTypesChange}
+                     />
+
+                     <FacilitiesFilter
+                        selectedFacilities={selectedFacilities}
+                        onChange={handleFacilitiesChange}
+                     />
+
+                     <PriceFilter
+                        selectedPrice={selectedPrice}
+                        onChange={(value?: number) => setSelectedPrice(value)}
+                     />
+                  </div>
+               </div>
+            </PopoverContent>
+         </Popover>
+
+         <div className="hidden lg:block rounded border p-5 lg:h-fit lg:sticky lg:top-10">
             <div className="space-y-5">
                <h3 className="text-lg font-semibold border-b pb-5">Filter by:</h3>
 
@@ -107,7 +144,7 @@ function SearchResult() {
                <span className="text-xl font-bold">
                   {isLoading
                      ? "Loading hotels..."
-                     : `${hotelData?.pagination.total} Hotels found`}
+                     : `${hotelData?.data.length} Hotels found`}
                   {search.destination && !isLoading ? ` in ${search.destination}` : ""}
                </span>
 

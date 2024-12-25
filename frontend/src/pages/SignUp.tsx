@@ -3,7 +3,7 @@ import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useMutation, useQueryClient } from "react-query";
-import * as apiServices from "../api-services";
+import * as authServices from "../services/auth-services";
 import { useAppContext } from "../contexts/AppContext";
 
 export type SignUpFormData = {
@@ -27,7 +27,7 @@ function SignUp() {
       formState: { errors, isLoading, isSubmitting },
    } = useForm<SignUpFormData>();
 
-   const mutation = useMutation(apiServices.signUp, {
+   const mutation = useMutation(authServices.signUp, {
       onSuccess: async () => {
          showToast({ message: "Account created successfully!", type: "SUCCESS" });
 
@@ -172,7 +172,7 @@ function SignUp() {
             className="w-36 text-lg"
             disabled={isLoading || isSubmitting}
          >
-            Submit
+            {isSubmitting ? "Signing up.." : "Sign up"}
          </Button>
       </form>
    );

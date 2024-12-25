@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import * as apiServices from "../api-services";
+import * as hotelServices from "../services/hotel-services";
 import { HotelType } from "../../../backend/src/shared/types";
 import { Link } from "react-router-dom";
 import Hero from "../components/Hero";
@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react";
 
 function Home() {
    const { data: hotels, isLoading } = useQuery("fetchHotels", () =>
-      apiServices.fetchHotels()
+      hotelServices.fetchHotels()
    );
 
    return (

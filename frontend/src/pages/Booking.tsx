@@ -1,4 +1,6 @@
-import * as apiServices from "../api-services";
+import * as hotelServices from "../services/hotel-services";
+import * as bookingServices from "../services/booking-services";
+import * as authServices from "../services/auth-services";
 import { useQuery } from "react-query";
 import BookingForm from "../forms/BookingForm";
 import { useSearchContext } from "../contexts/SearchContext";
@@ -15,14 +17,14 @@ function Booking() {
 
    const { data: hotel, isLoading: isHotelLoading } = useQuery(
       "fetchHotelById",
-      () => apiServices.fetchHotelById(id as string),
+      () => hotelServices.fetchHotelById(id as string),
       {
          enabled: !!id,
       }
    );
    const { data: currentUser, isLoading: isUserLoading } = useQuery(
       "currentUser",
-      apiServices.fetchCurrentUser
+      authServices.fetchCurrentUser
    );
 
    const [numberOfNights, setNumberOfNights] = useState<number>(0);
@@ -39,7 +41,7 @@ function Booking() {
 
    const { data: paymentIntent, isLoading: isPaymentLoading } = useQuery(
       "createPaymentIntent",
-      () => apiServices.createPaymentIntent(id as string, numberOfNights.toString()),
+      () => bookingServices.createPaymentIntent(id as string, numberOfNights.toString()),
       {
          enabled: !!id && numberOfNights > 0,
       }
@@ -73,6 +75,15 @@ function Booking() {
                numberOfNights={numberOfNights}
                hotel={hotel}
             />
+         )}
+
+         {currentUser && !paymentIntent && (
+            <div className="grid gap-4 rounded border p-5 h-fit">
+               <h2 className="text-xl font-bold">Apologies.</h2>
+               <div className="text-red-600">
+                  There was an error processing your payment. Please try again later.
+               </div>
+            </div>
          )}
 
          {currentUser && paymentIntent && (

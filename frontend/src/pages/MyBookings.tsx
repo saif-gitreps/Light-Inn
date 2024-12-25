@@ -1,18 +1,47 @@
-import { useQuery } from "react-query";
-import * as apiServices from "../api-services";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import * as bookingServices from "../services/booking-services";
+import { Link } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import { useAppContext } from "../contexts/AppContext";
 
 function MyBookings() {
+   const queryClient = useQueryClient();
+   const { showToast } = useAppContext();
    const { data: hotels, isLoading } = useQuery(
       "myBookings",
-      apiServices.fetchMyBookings
+      bookingServices.fetchMyBookings
+   );
+
+   const { mutate: deleteBooking, isLoading: isDeleteLoading } = useMutation(
+      ({ bookingId, hotelId }: { bookingId: string; hotelId: string }) =>
+         bookingServices.deleteBooking(bookingId, hotelId),
+      {
+         onSuccess: () => {
+            showToast({ message: "Booking cancelled successfully!", type: "SUCCESS" });
+            queryClient.invalidateQueries("myBookings");
+         },
+         onError: () => {
+            showToast({
+               message: "Something went wrong while cancelling",
+               type: "ERROR",
+            });
+         },
+      }
    );
 
    if (isLoading) {
       return <MyBookingCardSkeleton />;
    }
 
-   if (!hotels || hotels.length === 0) {
-      return <div>No bookings yet</div>;
+   if (!hotels || hotels?.length === 0) {
+      return (
+         <h1 className="text-center font-semibold">
+            No bookings yet.{" "}
+            <Link className="underline text-blue-700" to="/search?q=All">
+               Browse hotels
+            </Link>
+         </h1>
+      );
    }
 
    return (
@@ -31,26 +60,42 @@ function MyBookings() {
                </div>
                <div className="flex flex-col gap-4 overflow-y-auto max-h-[300px]">
                   <div className="text-2xl font-bold">
-                     {hotel.name}
+                     <Link to={`/detail/${hotel._id}`}>{hotel.name}</Link>
                      <div className="text-xs font-normal">
                         {hotel.city}, {hotel.country}
                      </div>
                   </div>
                   {hotel.bookings.map((booking) => (
-                     <div key={booking._id}>
+                     <div key={booking._id} className="flex justify-between">
                         <div>
-                           <span className="font-bold mr-2">Dates: </span>
-                           <span>
-                              {new Date(booking.checkIn).toDateString()} -
-                              {new Date(booking.checkOut).toDateString()}
-                           </span>
+                           <div>
+                              <span className="font-bold mr-2">Dates: </span>
+                              <span>
+                                 {new Date(booking.checkIn).toDateString()} -
+                                 {new Date(booking.checkOut).toDateString()}
+                              </span>
+                           </div>
+                           <div>
+                              <span className="font-bold mr-2">Guests:</span>
+                              <span>
+                                 {booking.adultCount} adults, {booking.childCount}{" "}
+                                 children
+                              </span>
+                           </div>
                         </div>
-                        <div>
-                           <span className="font-bold mr-2">Guests:</span>
-                           <span>
-                              {booking.adultCount} adults, {booking.childCount} children
-                           </span>
-                        </div>
+
+                        <Button
+                           variant="destructive"
+                           onClick={() =>
+                              deleteBooking({
+                                 bookingId: booking._id,
+                                 hotelId: hotel._id,
+                              })
+                           }
+                           disabled={isDeleteLoading}
+                        >
+                           Cancel
+                        </Button>
                      </div>
                   ))}
                </div>

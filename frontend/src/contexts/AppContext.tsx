@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import Toast from "../components/Toast";
 import { useQuery } from "react-query";
-import * as apiServices from "../api-services";
+import * as authServices from "../services/auth-services";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || "";
@@ -24,7 +24,7 @@ const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
    const [toast, setToast] = useState<ToastMessage | undefined>(undefined);
 
-   const { isError } = useQuery("validateToken", apiServices.validateToken, {
+   const { isError } = useQuery("validateToken", authServices.validateToken, {
       retry: false,
    });
 

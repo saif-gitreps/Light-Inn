@@ -1,21 +1,17 @@
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
-import { DollarSign, House, MapPin, PersonStanding, Plus, Star } from "lucide-react";
+import { BookMarked, DollarSign, House, MapPin, Pencil, Plus, Star } from "lucide-react";
 import { useQuery } from "react-query";
-import * as apiServices from "../api-services";
+import * as hotelServices from "../services/hotel-services";
 
 function MyHotels() {
-   const { data: myHotelsData, isLoading } = useQuery(
+   const { data: myHotels, isLoading } = useQuery(
       "fetchMyHotels",
-      apiServices.fetchMyHotels
+      hotelServices.fetchMyHotels
    );
 
    if (isLoading) {
       return <MyHotelCardSkeleton />;
-   }
-
-   if (!myHotelsData || myHotelsData.length === 0) {
-      return <div className="text-center">No hotels found.</div>;
    }
 
    return (
@@ -25,51 +21,61 @@ function MyHotels() {
 
             <Button asChild variant="outline">
                <Link to="/add-hotel">
-                  New <Plus className="ml-1 stroke-black" />
+                  New hotel
+                  <Plus className="ml-1 stroke-black" />
                </Link>
             </Button>
          </div>
 
-         <div className="grid grid-cols-1 gap-8">
-            {myHotelsData.map((hotel) => (
-               <div key={hotel._id} className="border shadow-sm rounded p-5 space">
-                  <h2 className="flex justify-between items-center text-xl font-semibold">
-                     {hotel.name}
+         {myHotels?.length === 0 ? (
+            <h1 className="text-center font-semibold">No hotels listed yet. </h1>
+         ) : (
+            <div className="grid grid-cols-1 gap-8">
+               {myHotels?.map((hotel) => (
+                  <div key={hotel._id} className="border shadow-sm rounded p-5 space">
+                     <h2 className="flex justify-between items-center text-xl font-semibold">
+                        {hotel.name}
 
-                     <Button asChild variant="outline">
-                        <Link to={`/edit-hotel/${hotel._id}`}>View and edit</Link>
-                     </Button>
-                  </h2>
-                  <div className="whitespace-pre-line text-lg">{hotel.description}</div>
-                  <div className="grid grid-cols-3 md:grid-cols-5">
-                     <div className="border rounded p-3 flex items-center">
-                        <MapPin className="mr-2 stroke-red-600" /> {hotel.city},{" "}
-                        {hotel.country}
+                        <Button asChild variant="outline">
+                           <Link to={`/edit-hotel/${hotel._id}`}>
+                              View and edit <Pencil />{" "}
+                           </Link>
+                        </Button>
+                     </h2>
+                     <div className="whitespace-pre-line text-lg">
+                        {hotel.description}
                      </div>
+                     <div className="grid grid-cols-3 md:grid-cols-5">
+                        <div className="border rounded p-3 flex items-center">
+                           <MapPin className="mr-2 stroke-red-600" /> {hotel.city},{" "}
+                           {hotel.country}
+                        </div>
 
-                     <div className="border rounded p-3 flex items-center">
-                        <House className="mr-2 stroke-blue-700" />
-                        {hotel.type}
-                     </div>
+                        <div className="border rounded p-3 flex items-center">
+                           <House className="mr-2 stroke-blue-700" />
+                           {hotel.type}
+                        </div>
 
-                     <div className="border rounded p-3 flex items-center">
-                        <DollarSign className="stroke-green-600" /> {hotel.pricePerNight}{" "}
-                        <span className="italic ml-1">per night</span>
-                     </div>
+                        <div className="border rounded p-3 flex items-center">
+                           <DollarSign className="stroke-green-600" />{" "}
+                           {hotel.pricePerNight}{" "}
+                           <span className="italic ml-1">per night</span>
+                        </div>
 
-                     <div className="border rounded p-3 flex items-center">
-                        <Star className="mr-2 stroke-yellow-600" /> {hotel.rating} star
-                        {hotel.rating > 1 && "s"}
-                     </div>
+                        <div className="border rounded p-3 flex items-center">
+                           <Star className="mr-2 stroke-yellow-600" /> {hotel.rating} star
+                           {hotel.rating > 1 && "s"}
+                        </div>
 
-                     <div className="border rounded p-3 flex items-center">
-                        <PersonStanding className="mr-2 stroke-violet-950" />{" "}
-                        {hotel.adultCount} adults, {hotel.childCount} children
+                        <div className="border rounded p-3 flex items-center">
+                           <BookMarked className="mr-2 stroke-green-800" />{" "}
+                           {hotel.bookings.length} bookings
+                        </div>
                      </div>
                   </div>
-               </div>
-            ))}
-         </div>
+               ))}
+            </div>
+         )}
       </div>
    );
 }

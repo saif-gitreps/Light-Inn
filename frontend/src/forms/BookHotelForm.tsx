@@ -91,9 +91,9 @@ function BookHotelForm({ hotelId, pricePerNight }: BookHotelFormProps) {
                <DatePicker
                   id="checkOut"
                   selected={checkOut}
-                  onChange={(date) => setValue("checkIn", date as Date)}
+                  onChange={(date) => setValue("checkOut", date as Date)}
                   selectsStart
-                  startDate={checkIn}
+                  startDate={checkOut}
                   endDate={checkOut}
                   minDate={new Date()}
                   maxDate={maxDate}
@@ -120,6 +120,7 @@ function BookHotelForm({ hotelId, pricePerNight }: BookHotelFormProps) {
                         })}
                      />
                   </label>
+
                   {errors.adultCount && (
                      <span className="text-red-600">{errors.adultCount.message}</span>
                   )}
@@ -136,6 +137,7 @@ function BookHotelForm({ hotelId, pricePerNight }: BookHotelFormProps) {
                         })}
                      />
                   </label>
+
                   {errors.childCount && (
                      <span className="text-red-600">{errors.childCount.message}</span>
                   )}
