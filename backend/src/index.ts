@@ -9,6 +9,7 @@ import hotelRoutes from "./routes/hotel.route";
 import myBookingRoutes from "./routes/my-booking.route";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
+import rateLimit from "express-rate-limit";
 // import path from "path";
 
 cloudinary.config({
@@ -25,8 +26,17 @@ app.use(
    cors({
       origin: process.env.FRONTEND_URL,
       credentials: true,
+      optionsSuccessStatus: 200,
    })
 );
+const limiter = rateLimit({
+   windowMs: 5 * 60 * 1000,
+   max: 1500,
+   message: "Too many requests from this IP, please try again after 15 minutes",
+   headers: true,
+   statusCode: 429,
+});
+app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static(path.join(__dirname, "../../frontend/dist")));
