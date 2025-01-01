@@ -9,6 +9,8 @@
       "e2e": "cross-env DOTENV_CONFIG_PATH=.env.e2e nodemon --watch src --ext ts,js --exec tsx src/index.ts",
       "start": "node ./dist/index.js",
       "build": "run-p -s build:*",
+      "prebuild": "node ./src/scripts/removeUnwantedLine.js",
+      "postbuild": "node ./src/scripts/removeUnwantedLine.js",
       "build:main": "babel -x .ts -d dist src",
       "build:types": "tsc"
    },
