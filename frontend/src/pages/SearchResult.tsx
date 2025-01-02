@@ -17,7 +17,7 @@ import { PopoverContent } from "@radix-ui/react-popover";
 function SearchResult() {
    const location = useLocation();
    const queryParam = new URLSearchParams(location.search);
-   const isAll = queryParam.get("q");
+   const [isAll, setIsAll] = useState<boolean>(queryParam.get("all") === "true");
    const search = useSearchContext();
    const [page, setPage] = useState(1);
    const [selectedStars, setSelectedStars] = useState<string[]>([]);
@@ -41,9 +41,12 @@ function SearchResult() {
    };
 
    const { data: hotelData, isLoading } = useQuery(["searchHotels", searchParams], () => {
-      return isAll
-         ? hotelServices.searchHotels(null)
-         : hotelServices.searchHotels(searchParams);
+      if (isAll) {
+         setIsAll(false);
+         return hotelServices.searchHotels(null);
+      }
+
+      return hotelServices.searchHotels(searchParams);
    });
 
    const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {

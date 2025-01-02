@@ -53,13 +53,13 @@ function Header() {
                ) : (
                   <>
                      <Button variant="link" asChild className="p-2">
-                        <Link to="/sign-in" className="text-white hidden sm:block">
+                        <Link to="/sign-in" className="text-white">
                            Sign in
                         </Link>
                      </Button>
 
                      <Button variant="link" asChild className="p-2">
-                        <Link to="/sign-up" className="text-white hidden sm:block">
+                        <Link to="/sign-up" className="text-white">
                            Sign up
                         </Link>
                      </Button>

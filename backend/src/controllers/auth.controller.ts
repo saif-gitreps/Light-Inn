@@ -48,7 +48,8 @@ export const signIn = asyncHandler(async (req: Request, res: Response): Promise<
    res.cookie("auth_token", token, {
       httpOnly: true,
       secure: true,
-      maxAge: 86400000,
+      sameSite: "none",
+      maxAge: 15 * 60 * 1000,
    });
 
    return res.status(200).json({
@@ -63,8 +64,10 @@ export const validateToken = asyncHandler((req: Request, res: Response): any => 
 });
 
 export const logout = asyncHandler((req: Request, res: Response): any => {
-   res.cookie("auth_token", "", {
-      expires: new Date(0),
+   res.clearCookie("auth_token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
    });
 
    res.status(200).json(new ApiResponse(200, {}, "Logged out successfully"));
