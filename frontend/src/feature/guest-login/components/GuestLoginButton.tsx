@@ -1,44 +1,60 @@
-import { KeyRound } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { useAppContext } from "../../../contexts/AppContext";
-import { useNavigate } from "react-router-dom";
 
-function GuestLoginButton() {
-   const { mutate: loginUser, isPending } = useLoginUser();
+import { useSignIn } from "../../auth/api/useSignIn";
+import React from "react";
+
+interface GuestLoginButtonProps {
+   children: React.ReactNode;
+   className?: string;
+   variant:
+      | "default"
+      | "destructive"
+      | "outline"
+      | "secondary"
+      | "ghost"
+      | "link"
+      | null
+      | undefined;
+}
+
+function GuestLoginButton({ children, className, variant }: GuestLoginButtonProps) {
+   const { mutate: signIn, isLoading } = useSignIn();
    const { showToast } = useAppContext();
    const navigate = useNavigate();
 
    const onClick = (data: { email: string; password: string }) => {
-      loginUser(data, {
-         onSuccess: (response) => {
+      signIn(data, {
+         onSuccess: () => {
             showToast({ type: "SUCCESS", message: "Welcome back!" });
-            login(response.data.user, response.data.accessToken);
+
             navigate("/");
+
+            window.location.reload();
          },
-         onError: (error) => {
-            showToast({ type: "ERROR", message: error.messaage });
+         onError: () => {
+            showToast({
+               type: "ERROR",
+               message: "something went wrong while signing in",
+            });
          },
       });
    };
 
    return (
       <Button
-         variant="secondary"
-         disabled={isPending}
+         variant={variant}
+         disabled={isLoading}
+         className={className}
          onClick={() =>
             onClick({
                email: "test@test.com",
-               password: "1234567",
+               password: "123456",
             })
          }
       >
-         {isPending ? (
-            "Logging in..."
-         ) : (
-            <>
-               Login as a guest <KeyRound />{" "}
-            </>
-         )}
+         {isLoading ? "Logging in..." : <>{children}</>}
       </Button>
    );
 }

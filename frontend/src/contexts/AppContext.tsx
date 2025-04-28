@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import Toast from "../components/Toast";
 import { useQuery } from "react-query";
-import * as authServices from "../services/auth-services";
+import * as authServices from "../feature/auth/services/auth-services";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || "";

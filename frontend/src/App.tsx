@@ -43,23 +43,28 @@ function App() {
                   </Layout>
                }
             />
-            <Route
-               path="/sign-up"
-               element={
-                  <Layout>
-                     <SignUp />
-                  </Layout>
-               }
-            />
 
-            <Route
-               path="/sign-in"
-               element={
-                  <Layout>
-                     <SignIn />
-                  </Layout>
-               }
-            />
+            {!isAuth && (
+               <>
+                  <Route
+                     path="/sign-up"
+                     element={
+                        <Layout>
+                           <SignUp />
+                        </Layout>
+                     }
+                  />
+
+                  <Route
+                     path="/sign-in"
+                     element={
+                        <Layout>
+                           <SignIn />
+                        </Layout>
+                     }
+                  />
+               </>
+            )}
 
             {isAuth && (
                <>

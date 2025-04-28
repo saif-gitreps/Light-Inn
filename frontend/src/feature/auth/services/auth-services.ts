@@ -1,6 +1,5 @@
-import { UserType } from "../../../backend/src/shared/types";
-import { SignInFormData } from "../pages/SignIn";
-import { SignUpFormData } from "../pages/SignUp";
+import { UserType } from "../../../../../backend/src/shared/types";
+import { SignInFormData, SignUpFormData } from "../../../lib/shared-types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
@@ -16,7 +15,7 @@ export const fetchCurrentUser = async (): Promise<UserType> => {
    return response.json();
 };
 
-export const signUp = async (formData: SignUpFormData) => {
+export const signUp = async (formData: SignUpFormData): Promise<void> => {
    const response = await fetch(`${API_BASE_URL}/api/users/sign-up`, {
       method: "POST",
       credentials: "include",

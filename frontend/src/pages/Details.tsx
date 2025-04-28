@@ -1,20 +1,12 @@
-import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import * as hotelServices from "../services/hotel-services";
-
 import { Star } from "lucide-react";
-import BookHotelForm from "../forms/BookHotelForm";
+
+import { useFetchHotelById } from "../feature/hotel/api/useFetchHotelById";
+import BookHotelForm from "../feature/booking/components/BookHotelForm";
 
 function Detail() {
    const { id } = useParams();
-
-   const { data: hotel, isLoading } = useQuery(
-      ["fetchHotelById", id],
-      () => hotelServices.fetchHotelById(id as string),
-      {
-         enabled: !!id,
-      }
-   );
+   const { data: hotel, isLoading } = useFetchHotelById(id as string);
 
    if (isLoading) {
       return <DetailSkeleton />;

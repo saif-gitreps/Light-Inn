@@ -1,31 +1,14 @@
-import { useMutation, useQuery } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import * as hotelServices from "../services/hotel-services";
+import { useParams } from "react-router-dom";
 import HotelForm from "../forms/HotelForm";
-import { useAppContext } from "../contexts/AppContext";
+import { useFetchMyHotelById } from "../feature/hotel/api/useFetchMyHotelById";
+import { useUpdateMyHotel } from "../feature/hotel/api/useUpdateMyHotel";
 
 function EditHotel() {
    const { id } = useParams<{ id: string }>();
-   const { showToast } = useAppContext();
-   const navigate = useNavigate();
 
-   const { data: hotel } = useQuery(
-      "fetchMyHotelById",
-      () => hotelServices.fetchMyHotelById(id as string),
-      {
-         enabled: !!id,
-      }
-   );
+   const { data: hotel } = useFetchMyHotelById(id as string);
 
-   const { mutate, isLoading } = useMutation(hotelServices.updatedMyHotel, {
-      onSuccess: () => {
-         showToast({ message: "Hotel updated successfully!", type: "SUCCESS" });
-         navigate("/my-hotels");
-      },
-      onError: () => {
-         showToast({ message: "Something went wrong while updating", type: "ERROR" });
-      },
-   });
+   const { mutate, isLoading } = useUpdateMyHotel();
 
    const handleSave = (data: FormData) => {
       mutate(data);

@@ -1,6 +1,6 @@
 import * as hotelServices from "../services/hotel-services";
 import * as bookingServices from "../services/booking-services";
-import * as authServices from "../services/auth-services";
+import * as authServices from "../feature/auth/services/auth-services";
 import { useQuery } from "react-query";
 import BookingForm from "../forms/BookingForm";
 import { useSearchContext } from "../contexts/SearchContext";

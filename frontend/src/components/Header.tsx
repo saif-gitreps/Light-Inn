@@ -5,6 +5,7 @@ import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "./SignOutButton";
 import SearchBar from "./SearchBar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import GuestLoginButton from "../feature/guest-login/components/GuestLoginButton";
 
 function Header() {
    const { isAuth } = useAppContext();
@@ -63,6 +64,10 @@ function Header() {
                            Sign up
                         </Link>
                      </Button>
+
+                     <GuestLoginButton className="text-gray-700 p-2" variant="outline">
+                        Try as a guest
+                     </GuestLoginButton>
                   </>
                )}
             </span>

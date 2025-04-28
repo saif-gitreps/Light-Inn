@@ -1,9 +1,9 @@
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
-import { useSearchContext } from "../contexts/SearchContext";
-import { Button } from "../components/ui/button";
-import { useAppContext } from "../contexts/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSearchContext } from "../../../contexts/SearchContext";
+import { useAppContext } from "../../../contexts/AppContext";
+import { Button } from "../../../components/ui/button";
 
 type BookHotelFormProps = {
    hotelId: string;

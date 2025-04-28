@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
-import * as authServices from "../services/auth-services";
+import * as authServices from "../feature/auth/services/auth-services";
 
 function SignOutButton() {
    const queryClient = useQueryClient();
