@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { Star } from "lucide-react";
-
 import { useFetchHotelById } from "../feature/hotel/api/useFetchHotelById";
 import BookHotelForm from "../feature/booking/components/BookHotelForm";
 

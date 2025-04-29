@@ -1,14 +1,10 @@
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { BookMarked, DollarSign, House, MapPin, Pencil, Plus, Star } from "lucide-react";
-import { useQuery } from "react-query";
-import * as hotelServices from "../services/hotel-services";
+import { useFetchMyHotels } from "../feature/hotel/api/useFetchMyHotels";
 
 function MyHotels() {
-   const { data: myHotels, isLoading } = useQuery(
-      "fetchMyHotels",
-      hotelServices.fetchMyHotels
-   );
+   const { data: myHotels, isLoading } = useFetchMyHotels();
 
    if (isLoading) {
       return <MyHotelCardSkeleton />;

@@ -1,5 +1,5 @@
 import { useAddHotel } from "../feature/hotel/api/useAddHotel";
-import HotelForm from "../feature/hotel/components/HotelForm/HotelForm";
+import HotelForm from "../feature/hotel/components/HotelForm";
 
 function AddHotel() {
    const { mutate, isLoading } = useAddHotel();

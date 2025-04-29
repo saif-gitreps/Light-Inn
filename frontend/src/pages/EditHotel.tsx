@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import HotelForm from "../forms/HotelForm";
 import { useFetchMyHotelById } from "../feature/hotel/api/useFetchMyHotelById";
 import { useUpdateMyHotel } from "../feature/hotel/api/useUpdateMyHotel";
+import HotelForm from "../feature/hotel/components/HotelForm";
 
 function EditHotel() {
    const { id } = useParams<{ id: string }>();

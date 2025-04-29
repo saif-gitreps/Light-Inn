@@ -1,18 +1,5 @@
-import { HotelSearchResponse, HotelType } from "../../../../../backend/src/shared/types";
+import { HotelSearchResponse } from "../../../../../backend/src/shared/types";
 import API_BASE_URL from "../../../config/base-url";
-
-export const fetchMyHotels = async (): Promise<HotelType[]> => {
-   const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
-      method: "GET",
-      credentials: "include",
-   });
-
-   if (!response.ok) {
-      throw new Error("Failed to fetch hotels");
-   }
-
-   return response.json();
-};
 
 export type SearchParams = {
    destination: string;

@@ -1,40 +1,26 @@
 import { useForm } from "react-hook-form";
-import { PaymentIntentResponse, UserType } from "../../../backend/src/shared/types";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripeCardElement } from "@stripe/stripe-js";
-import { useSearchContext } from "../contexts/SearchContext";
-import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQueryClient } from "react-query";
-import * as bookingServices from "../services/booking-services";
-import { Button } from "../components/ui/button";
-import { useAppContext } from "../contexts/AppContext";
+import { useParams } from "react-router-dom";
+import { Button } from "../../../components/ui/button";
+import { BookingFormData, CurrentUser } from "../../../lib/shared-types";
+import { useSearchContext } from "../../../contexts/SearchContext";
+import { PaymentIntentResponse } from "../../../../../backend/src/shared/types";
+import { useBookHotelRoom } from "../api/useBookHotelRoom";
 
-type BookingFormProps = {
-   currentUser: UserType;
+type ConfirmHotelBookingFormProps = {
+   currentUser: CurrentUser;
    paymentIntent: PaymentIntentResponse;
 };
 
-export type BookingFormData = {
-   firstName: string;
-   lastName: string;
-   email: string;
-   adultCount: number;
-   childCount: number;
-   checkIn: string;
-   checkOut: string;
-   hotelId: string;
-   paymentIntentId: string;
-   totalCost: number;
-};
-
-function BookingForm({ currentUser, paymentIntent }: BookingFormProps) {
-   const navigate = useNavigate();
+function ConfirmHotelBookingForm({
+   currentUser,
+   paymentIntent,
+}: ConfirmHotelBookingFormProps) {
    const stripe = useStripe();
    const elements = useElements();
    const search = useSearchContext();
    const { id } = useParams();
-   const { showToast } = useAppContext();
-   const queryClient = useQueryClient();
 
    const { handleSubmit, register } = useForm<BookingFormData>({
       defaultValues: {
@@ -51,19 +37,7 @@ function BookingForm({ currentUser, paymentIntent }: BookingFormProps) {
       },
    });
 
-   const { mutate: bookHotelRoom, isLoading } = useMutation(
-      bookingServices.bookHotelRoom,
-      {
-         onSuccess: () => {
-            showToast({ message: "Hotel booked successfully!", type: "SUCCESS" });
-            queryClient.invalidateQueries("myBookings");
-            navigate("/booked-rooms");
-         },
-         onError: () => {
-            showToast({ message: "Something went wrong while booking", type: "ERROR" });
-         },
-      }
-   );
+   const { mutate: bookHotelRoom, isLoading } = useBookHotelRoom();
 
    const onSubmit = async (formData: BookingFormData) => {
       if (!stripe || !elements) {
@@ -149,4 +123,4 @@ function BookingForm({ currentUser, paymentIntent }: BookingFormProps) {
    );
 }
 
-export default BookingForm;
+export default ConfirmHotelBookingForm;

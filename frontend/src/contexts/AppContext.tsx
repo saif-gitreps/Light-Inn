@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import Toast from "../components/Toast";
-import { useQuery } from "react-query";
-import * as authServices from "../feature/auth/services/auth-services";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
+import { CurrentUser } from "../lib/shared-types";
+import { useFetchCurrentUser } from "../feature/auth/api/useFetchCurrentUser";
 
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || "";
 
@@ -14,6 +14,7 @@ type ToastMessage = {
 type AppContext = {
    showToast: (message: ToastMessage) => void;
    isAuth: boolean;
+   currentUser: CurrentUser | undefined;
    stripePromise: Promise<Stripe | null>;
 };
 
@@ -24,9 +25,7 @@ const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
    const [toast, setToast] = useState<ToastMessage | undefined>(undefined);
 
-   const { isError } = useQuery("validateToken", authServices.validateToken, {
-      retry: false,
-   });
+   const { data: currentUser, isError } = useFetchCurrentUser({ retry: false });
 
    return (
       <AppContext.Provider
@@ -35,6 +34,7 @@ export const AppContextProvider = ({ children }: { children: React.ReactNode }) 
                setToast(message);
             },
             isAuth: !isError,
+            currentUser,
             stripePromise,
          }}
       >

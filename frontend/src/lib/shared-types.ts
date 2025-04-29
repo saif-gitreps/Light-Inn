@@ -11,3 +11,23 @@ export type SignUpFormData = {
    lastName: string;
    phoneNumber: string;
 };
+
+export type CurrentUser = {
+   _id: string;
+   email: string;
+   firstName: string;
+   lastName: string;
+};
+
+export type BookingFormData = {
+   firstName: string;
+   lastName: string;
+   email: string;
+   adultCount: number;
+   childCount: number;
+   checkIn: string;
+   checkOut: string;
+   hotelId: string;
+   paymentIntentId: string;
+   totalCost: number;
+};
