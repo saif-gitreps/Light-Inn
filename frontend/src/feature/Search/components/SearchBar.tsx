@@ -3,7 +3,7 @@ import { useSearchContext } from "../contexts/SearchContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
-import { Button } from "./ui/button";
+import { Button } from "../../../components/ui/button";
 import { Search } from "lucide-react";
 
 function SearchBar() {

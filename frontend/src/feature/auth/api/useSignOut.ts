@@ -19,7 +19,7 @@ export const useSignOut = () => {
 
    return useMutation(signOut, {
       onSuccess: async () => {
-         await queryClient.invalidateQueries("validateToken");
+         await queryClient.invalidateQueries("currentUser");
 
          showToast({ message: "Signed out successfully!", type: "SUCCESS" });
       },

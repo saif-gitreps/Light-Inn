@@ -1,4 +1,4 @@
-import { useSearchContext } from "../contexts/SearchContext";
+import { useSearchContext } from "../feature/Search/contexts/SearchContext";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";

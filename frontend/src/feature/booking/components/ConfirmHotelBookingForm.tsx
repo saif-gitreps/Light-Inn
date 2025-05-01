@@ -4,7 +4,7 @@ import { StripeCardElement } from "@stripe/stripe-js";
 import { useParams } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { BookingFormData, CurrentUser } from "../../../lib/shared-types";
-import { useSearchContext } from "../../../contexts/SearchContext";
+import { useSearchContext } from "../../Search/contexts/SearchContext";
 import { PaymentIntentResponse } from "../../../../../backend/src/shared/types";
 import { useBookHotelRoom } from "../api/useBookHotelRoom";
 

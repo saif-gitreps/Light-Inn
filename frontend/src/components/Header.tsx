@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { BookCheck, Hotel, House, Search } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "../feature/auth/components/SignOutButton";
-import SearchBar from "./SearchBar";
+import SearchBar from "../feature/Search/components/SearchBar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import GuestLoginButton from "../feature/guest-login/components/GuestLoginButton";
 

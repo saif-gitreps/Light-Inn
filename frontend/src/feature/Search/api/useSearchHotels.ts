@@ -1,19 +1,7 @@
+import { useQuery } from "react-query";
+import { SearchParams } from "../../../lib/shared-types";
 import { HotelSearchResponse } from "../../../../../backend/src/shared/types";
 import API_BASE_URL from "../../../config/base-url";
-
-export type SearchParams = {
-   destination: string;
-   checkIn: string;
-   checkOut: string;
-   adultCount?: number;
-   childCount?: number;
-   page?: string;
-   facilities?: string[];
-   types?: string[];
-   stars?: string | string[];
-   maxPrice?: string;
-   sortOption?: string;
-};
 
 export const searchHotels = async (
    searchParams: SearchParams | null
@@ -53,4 +41,19 @@ export const searchHotels = async (
    }
 
    return response.json();
+};
+
+export const useSearchHotels = (
+   isAll: boolean,
+   setIsAll: React.Dispatch<React.SetStateAction<boolean>>,
+   searchParams: SearchParams
+) => {
+   return useQuery(["searchHotels", searchParams], () => {
+      if (isAll) {
+         setIsAll(false);
+         return searchHotels(null);
+      }
+
+      return searchHotels(searchParams);
+   });
 };

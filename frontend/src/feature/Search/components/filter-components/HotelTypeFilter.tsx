@@ -1,4 +1,4 @@
-import { hotelTypes } from "../../config/hotel-options";
+import { hotelTypes } from "../../../../config/hotel-options";
 
 type HotelTypeFilterProps = {
    selectedHotelTypes: string[];

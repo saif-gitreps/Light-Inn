@@ -1,7 +1,7 @@
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSearchContext } from "../../../contexts/SearchContext";
+import { useSearchContext } from "../../Search/contexts/SearchContext";
 import { useAppContext } from "../../../contexts/AppContext";
 import { Button } from "../../../components/ui/button";
 

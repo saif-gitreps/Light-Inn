@@ -1,33 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import * as bookingServices from "../services/booking-services";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import { useAppContext } from "../contexts/AppContext";
+import { useFetchMyHotelBookings } from "../feature/booking/api/useFetchMyBookings";
+import { useDeleteBooking } from "../feature/booking/api/useDeleteBooking";
 
 function MyBookings() {
-   const queryClient = useQueryClient();
-   const { showToast } = useAppContext();
-   const { data: hotels, isLoading } = useQuery(
-      "myBookings",
-      bookingServices.fetchMyBookings
-   );
+   const { data: hotels, isLoading } = useFetchMyHotelBookings();
 
-   const { mutate: deleteBooking, isLoading: isDeleteLoading } = useMutation(
-      ({ bookingId, hotelId }: { bookingId: string; hotelId: string }) =>
-         bookingServices.deleteBooking(bookingId, hotelId),
-      {
-         onSuccess: () => {
-            showToast({ message: "Booking cancelled successfully!", type: "SUCCESS" });
-            queryClient.invalidateQueries("myBookings");
-         },
-         onError: () => {
-            showToast({
-               message: "Something went wrong while cancelling",
-               type: "ERROR",
-            });
-         },
-      }
-   );
+   const { mutate: deleteBooking, isLoading: isDeleteLoading } = useDeleteBooking();
 
    if (isLoading) {
       return <MyBookingCardSkeleton />;

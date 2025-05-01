@@ -31,3 +31,17 @@ export type BookingFormData = {
    paymentIntentId: string;
    totalCost: number;
 };
+
+export type SearchParams = {
+   destination: string;
+   checkIn: string;
+   checkOut: string;
+   adultCount?: number;
+   childCount?: number;
+   page?: string;
+   facilities?: string[];
+   types?: string[];
+   stars?: string | string[];
+   maxPrice?: string;
+   sortOption?: string;
+};
