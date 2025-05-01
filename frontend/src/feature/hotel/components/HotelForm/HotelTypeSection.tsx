@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { Button } from "../../../../components/ui/button";
-import { HotelFormData } from "./HotelForm";
+import { HotelFormData } from ".";
 import { hotelTypes } from "../../../../config/hotel-options";
 
 function HotelTypeSection() {

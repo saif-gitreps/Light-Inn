@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
-import { HotelFormData } from "./HotelForm";
 import { Trash2 } from "lucide-react";
+import { HotelFormData } from ".";
 
 export default function ImagesSection() {
    const {
@@ -20,7 +20,7 @@ export default function ImagesSection() {
 
       setValue(
          "imageUrls",
-         existingImageUrls.filter((url) => url !== imageUrl)
+         existingImageUrls.filter((url: string) => url !== imageUrl)
       );
    };
 
@@ -31,7 +31,7 @@ export default function ImagesSection() {
          <div className="flex flex-col gap-4">
             {existingImageUrls && (
                <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-                  {existingImageUrls.map((imageUrl) => (
+                  {existingImageUrls.map((imageUrl: string) => (
                      <div className="relative group" key={imageUrl}>
                         <img src={imageUrl} className="min-h-full object-cover " />
 
