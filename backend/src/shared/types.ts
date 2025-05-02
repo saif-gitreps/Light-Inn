@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export type HotelType = {
    _id: string;
    userId: string;
@@ -50,4 +52,13 @@ export type PaymentIntentResponse = {
    paymentIntentId: string;
    clientSecret: string;
    totalCost: number;
+};
+
+export type ChatMessageType = {
+   text: string;
+   senderId: string;
+   recipientId: string;
+   chatRoomId: typeof mongoose.Schema.Types.ObjectId | string;
+   isRead: boolean;
+   createdAt: Date;
 };
