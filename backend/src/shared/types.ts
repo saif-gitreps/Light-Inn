@@ -54,11 +54,23 @@ export type PaymentIntentResponse = {
    totalCost: number;
 };
 
-export type ChatMessageType = {
-   text: string;
-   senderId: string;
-   recipientId: string;
-   chatRoomId: typeof mongoose.Schema.Types.ObjectId | string;
-   isRead: boolean;
+export interface ChatMessage {
+   _id: string;
+   chatRoomId: string;
+   sender: string;
+   content: string;
+   timestamp: Date;
+}
+
+export interface ChatRoom {
+   _id: string;
+   participants: string[];
+   lastMessage?: ChatMessage;
    createdAt: Date;
-};
+   updatedAt: Date;
+}
+
+export interface WSMessage {
+   type: "message" | "join_room" | "leave_room" | "typing" | "read";
+   payload: any;
+}
