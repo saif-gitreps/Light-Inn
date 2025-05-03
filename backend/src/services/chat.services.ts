@@ -26,3 +26,40 @@ export const createChatRoom = async (
 
    return newRoom.save();
 };
+
+export const getChatRoomsByUserId = async (userId: string): Promise<ChatRoomType[]> => {
+   return await ChatRoom.find({ participants: userId })
+      .populate("lastMessage")
+      .populate("participants", "username email")
+      .sort({ updatedAt: -1 })
+      .exec();
+};
+
+export const getChatRoomMessages = async (
+   chatRoomId: string,
+   limit: number = 50,
+   offset: number = 50
+): Promise<ChatMessageType[]> => {
+   return await ChatMessage.find({ chatRoomId })
+      .sort({ timestamp: -1 })
+      .skip(offset)
+      .limit(limit)
+      .populate("sender", "username")
+      .exec();
+};
+
+export const saveMessage = async (
+   chatRoomId: string,
+   senderId: string,
+   content: string
+): Promise<ChatMessageType> => {
+   const message = new ChatMessage({
+      chatRoomId,
+      sender: senderId,
+
+      content,
+      timestamp: new Date(),
+   });
+
+   return await message.save();
+};
