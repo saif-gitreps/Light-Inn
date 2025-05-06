@@ -10,6 +10,7 @@ import myBookingRoutes from "./routes/my-booking.route";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import rateLimit from "express-rate-limit";
+import http from "http";
 // import path from "path";
 
 cloudinary.config({
@@ -21,6 +22,9 @@ cloudinary.config({
 mongoose.connect(process.env.MONGODB_URI as string);
 
 const app = express();
+
+const server = http.createServer(app);
+
 app.use(cookieParser());
 app.use(
    cors({

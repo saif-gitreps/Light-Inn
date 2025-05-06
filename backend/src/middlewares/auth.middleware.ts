@@ -36,3 +36,24 @@ export const verifyToken = (
       });
    }
 };
+
+export const verifyTokenForWebSocket = (
+   req: Request,
+   res?: Response
+): Promise<string> | any => {
+   const token = req.cookies["auth_token"];
+
+   if (!token) {
+      throw new Error("Unaothorized");
+   }
+
+   try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+
+      req.userId = (decoded as JwtPayload).userId;
+
+      return req.userId;
+   } catch (error) {
+      console.error(error);
+   }
+};
