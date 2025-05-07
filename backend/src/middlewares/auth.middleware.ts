@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { parse } from "cookie";
+import http, { IncomingMessage, ServerResponse } from "http";
 
 declare global {
    namespace Express {
@@ -7,6 +9,10 @@ declare global {
          userId?: string;
       }
    }
+}
+
+interface CustomIncomingMessage extends IncomingMessage {
+   userId?: string;
 }
 
 export const verifyToken = (
@@ -38,22 +44,21 @@ export const verifyToken = (
 };
 
 export const verifyTokenForWebSocket = (
-   req: Request,
-   res?: Response
-): Promise<string> | any => {
-   const token = req.cookies["auth_token"];
+   req: CustomIncomingMessage,
+   res?: ServerResponse
+): string | boolean => {
+   const cookies = parse(req.headers.cookie || "");
+   const token = cookies["auth_token"];
 
    if (!token) {
-      throw new Error("Unaothorized");
+      return false;
    }
 
    try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
-
-      req.userId = (decoded as JwtPayload).userId;
-
-      return req.userId;
+      return (req.userId = (decoded as JwtPayload).userId);
    } catch (error) {
       console.error(error);
+      return false;
    }
 };

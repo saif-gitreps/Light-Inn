@@ -1,6 +1,9 @@
 import { Server as HttpServer } from "http";
 import WebSocket, { WebSocketServer } from "ws";
-import url, { URL } from "url";
+import { URL } from "url";
+import { getChatRoomMessages, saveMessage } from "../services/chat.services";
+import { WSMessage } from "../shared/types";
+import { verifyTokenForWebSocket } from "../middlewares/auth.middleware";
 
 // map to store active connections
 const clients = new Map<string, WebSocket>();
@@ -16,10 +19,8 @@ export default function setUpWebSocketServer(server: HttpServer) {
       const reqUrl = new URL(request.url || "");
       const pathname = reqUrl.pathname;
 
-      const params = new URLSearchParams(reqUrl.search);
-
       if (pathname === "/ws") {
-         const token = params.get("token");
+         const token = verifyTokenForWebSocket(request);
 
          if (!token) {
             socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
@@ -28,19 +29,10 @@ export default function setUpWebSocketServer(server: HttpServer) {
             return;
          }
 
-         try {
-            const user = await verifyTokenForWebSocket(token);
-
-            // storing user info on the request for later use
-            (request as any).user = user;
-            wss.handleUpgrade(request, socket, head, (ws) => {
-               wss.emit("connection", ws, request);
-            });
-         } catch (error) {
-            console.error("WebSocket authentication error:", error);
-            socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-            socket.destroy();
-         }
+         // storing user info on the request for later use
+         wss.handleUpgrade(request, socket, head, (ws) => {
+            wss.emit("connection", ws, request);
+         });
       } else {
          socket.destroy();
       }

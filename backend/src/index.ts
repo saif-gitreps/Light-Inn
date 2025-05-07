@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import rateLimit from "express-rate-limit";
 import http from "http";
+import setUpWebSocketServer from "./websocket/wsServer";
 // import path from "path";
 
 cloudinary.config({
@@ -19,11 +20,13 @@ cloudinary.config({
    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-mongoose.connect(process.env.MONGODB_URI as string);
-
 const app = express();
 
 const server = http.createServer(app);
+
+mongoose.connect(process.env.MONGODB_URI as string);
+
+setUpWebSocketServer(server);
 
 app.use(cookieParser());
 app.use(
@@ -55,6 +58,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/my-hotels", myHotelRoutes);
 app.use("/api/hotels", hotelRoutes);
 app.use("/api/my-bookings", myBookingRoutes);
+app.use("/api/chat", chatRoutes);
 
 /*
    app.get("*", (req: Request, res: Response): any => {
