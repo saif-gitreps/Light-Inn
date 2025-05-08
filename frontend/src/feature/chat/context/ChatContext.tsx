@@ -10,6 +10,14 @@ import { ChatRoom, ChatMessage, User, WSMessage } from "../../../lib/shared-type
 import useWebSocket from "../hooks/useWebSocket";
 import { getChatRooms, getChatMessages, createChatRoom } from "../api/chat";
 
+const getWebSocketUrl = () => {
+   const isProduction = import.meta.env.PROD;
+   const host = import.meta.env.VITE_API_HOST || window.location.host;
+   const protocol =
+      isProduction || window.location.protocol === "https:" ? "wss:" : "ws:";
+   return `${protocol}//${host}/ws`;
+};
+
 interface ChatContextType {
    rooms: ChatRoom[];
    activeRoom: ChatRoom | null;
@@ -33,17 +41,10 @@ export const ChatProvider: React.FC<{ children: ReactNode; currentUser: User }> 
    const [messages, setMessages] = useState<Record<string, ChatMessage[]>>({});
    const [loading, setLoading] = useState<boolean>(true);
    const [typingUsers, setTypingUsers] = useState<Record<string, string[]>>({});
+   const url = getWebSocketUrl();
 
    // Initialize WebSocket connection
-   const {
-      sendMessage: wsSendMessage,
-      lastMessage,
-      readyState,
-   } = useWebSocket(
-      `${
-         import.meta.env.VITE_WS_URL || "ws://localhost:5000/ws"
-      }?token=${localStorage.getItem("token")}`
-   );
+   const { sendMessage: wsSendMessage, lastMessage } = useWebSocket(url);
 
    // Load chat rooms on mount
    useEffect(() => {
