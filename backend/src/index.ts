@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.route";
 import myHotelRoutes from "./routes/my-hotel.routes";
 import hotelRoutes from "./routes/hotel.route";
 import myBookingRoutes from "./routes/my-booking.route";
+import chatRoutes from "./routes/my-booking.route";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import rateLimit from "express-rate-limit";

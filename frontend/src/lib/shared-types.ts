@@ -46,16 +46,10 @@ export type SearchParams = {
    sortOption?: string;
 };
 
-export interface User {
-   _id: string;
-   username: string;
-   email: string;
-}
-
 export interface ChatMessage {
    _id: string;
    chatRoomId: string;
-   sender: User | string;
+   sender: CurrentUser | string;
    content: string;
    timestamp: Date;
    status?: "sent" | "delivered" | "read";
@@ -63,7 +57,7 @@ export interface ChatMessage {
 
 export interface ChatRoom {
    _id: string;
-   participants: User[];
+   participants: CurrentUser[];
    lastMessage?: ChatMessage;
    createdAt: Date;
    updatedAt: Date;
@@ -71,5 +65,6 @@ export interface ChatRoom {
 
 export interface WSMessage {
    type: string;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    payload: any;
 }

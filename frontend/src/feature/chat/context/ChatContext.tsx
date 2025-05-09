@@ -6,7 +6,7 @@ import React, {
    useCallback,
    ReactNode,
 } from "react";
-import { ChatRoom, ChatMessage, User, WSMessage } from "../../../lib/shared-types";
+import { ChatRoom, ChatMessage, WSMessage, CurrentUser } from "../../../lib/shared-types";
 import useWebSocket from "../hooks/useWebSocket";
 import { getChatRooms, getChatMessages, createChatRoom } from "../api/chat";
 
@@ -32,10 +32,10 @@ interface ChatContextType {
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-export const ChatProvider: React.FC<{ children: ReactNode; currentUser: User }> = ({
-   children,
-   currentUser,
-}) => {
+export const ChatProvider: React.FC<{
+   children: ReactNode;
+   currentUser: CurrentUser;
+}> = ({ children, currentUser }) => {
    const [rooms, setRooms] = useState<ChatRoom[]>([]);
    const [activeRoom, setActiveRoomState] = useState<ChatRoom | null>(null);
    const [messages, setMessages] = useState<Record<string, ChatMessage[]>>({});
@@ -44,7 +44,9 @@ export const ChatProvider: React.FC<{ children: ReactNode; currentUser: User }> 
    const url = getWebSocketUrl();
 
    // Initialize WebSocket connection
-   const { sendMessage: wsSendMessage, lastMessage } = useWebSocket(url);
+   const { sendMessage: wsSendMessage, lastMessage } = useWebSocket(
+      "http://localhost:5000/ws"
+   );
 
    // Load chat rooms on mount
    useEffect(() => {
@@ -93,7 +95,13 @@ export const ChatProvider: React.FC<{ children: ReactNode; currentUser: User }> 
    }, [lastMessage]);
 
    // Handle new messages from WebSocket
-   const handleNewMessage = (payload: any) => {
+   const handleNewMessage = (payload: {
+      roomId: string;
+      messageId: string;
+      sender: string;
+      content: string;
+      timestamp: string; // TODO: CHECK IF DATE IS THE TYPE TO SET HERE.
+   }) => {
       const { roomId, messageId, sender, content, timestamp } = payload;
 
       const newMessage: ChatMessage = {
@@ -129,12 +137,12 @@ export const ChatProvider: React.FC<{ children: ReactNode; currentUser: User }> 
    };
 
    // Handle room history from WebSocket
-   const handleRoomHistory = (payload: any) => {
+   const handleRoomHistory = (payload: { roomId: string; messages: ChatMessage[] }) => {
       const { roomId, messages: roomMessages } = payload;
 
       setMessages((prevMessages) => ({
          ...prevMessages,
-         [roomId]: roomMessages.map((msg: any) => ({
+         [roomId]: roomMessages.map((msg: ChatMessage) => ({
             ...msg,
             timestamp: new Date(msg.timestamp),
          })),
@@ -142,7 +150,11 @@ export const ChatProvider: React.FC<{ children: ReactNode; currentUser: User }> 
    };
 
    // Handle typing status from WebSocket
-   const handleTypingStatus = (payload: any) => {
+   const handleTypingStatus = (payload: {
+      roomId: string;
+      userId: string;
+      isTyping: boolean;
+   }) => {
       const { roomId, userId, isTyping } = payload;
 
       setTypingUsers((prev) => {

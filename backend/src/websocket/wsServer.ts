@@ -17,9 +17,13 @@ export default function setUpWebSocketServer(server: HttpServer) {
    // handle the upgrade from HTTP to WebSocket
    server.on("upgrade", async (request, socket, head) => {
       const reqUrl = new URL(request.url || "");
+
+      console.log("websocked before pathname");
+
       const pathname = reqUrl.pathname;
 
       if (pathname === "/ws") {
+         console.log("websocket on the backend reached");
          const token = verifyTokenForWebSocket(request);
 
          if (!token) {

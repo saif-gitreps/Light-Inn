@@ -12,6 +12,7 @@ import Details from "./pages/Details";
 import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
+import Inbox from "./pages/Inbox";
 
 function App() {
    const { isAuth } = useAppContext();
@@ -76,6 +77,7 @@ function App() {
                         </Layout>
                      }
                   />
+
                   <Route
                      path="/add-hotel"
                      element={
@@ -105,6 +107,14 @@ function App() {
                      element={
                         <Layout>
                            <EditHotel />
+                        </Layout>
+                     }
+                  />
+                  <Route
+                     path="/inbox"
+                     element={
+                        <Layout>
+                           <Inbox />
                         </Layout>
                      }
                   />
