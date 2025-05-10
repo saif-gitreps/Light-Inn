@@ -54,6 +54,7 @@ export const signIn = asyncHandler(async (req: Request, res: Response): Promise<
 
    return res.status(200).json({
       userId: user._id,
+      token,
    });
 });
 

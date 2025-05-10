@@ -1,228 +1,144 @@
-import { Server as HttpServer } from "http";
-import WebSocket, { WebSocketServer } from "ws";
-import { URL } from "url";
-import { getChatRoomMessages, saveMessage } from "../services/chat.services";
-import { WSMessage } from "../shared/types";
-import { verifyTokenForWebSocket } from "../middlewares/auth.middleware";
+import { Server } from "socket.io";
+import http from "http";
+import jwt from "jsonwebtoken";
+import ChatRoom from "../models/chatRoom.model";
+import Message from "../models/chatMessage.model";
+import mongoose from "mongoose";
+import cookie from "cookie";
 
-// map to store active connections
-const clients = new Map<string, WebSocket>();
+// Map to track active connections
+const connectedUsers = new Map();
 
-// map to store which chat room a user is connected to
-const userRooms = new Map<string, Set<string>>();
+export default function initializeSocket(server: http.Server) {
+   const io = new Server(server, {
+      cors: {
+         origin: process.env.FRONTEND_URL || "http://localhost:5173", // Your Vite React app's URL
+         methods: ["GET", "POST"],
+         credentials: true,
+      },
+   });
 
-export default function setUpWebSocketServer(server: HttpServer) {
-   const wss = new WebSocketServer({ noServer: true });
+   // Authentication middleware
+   io.use((socket, next) => {
+      const { cookie: cookieHeader } = socket.handshake.headers;
 
-   // handle the upgrade from HTTP to WebSocket
-   server.on("upgrade", async (request, socket, head) => {
-      const reqUrl = new URL(request.url || "");
+      if (!cookieHeader) {
+         return next(new Error("No cookies found"));
+      }
 
-      console.log("websocked before pathname");
+      const cookies = cookie.parse(cookieHeader);
+      const token = cookies["auth_token"]; // or whatever cookie name you use
 
-      const pathname = reqUrl.pathname;
+      if (!token) {
+         return next(new Error("Authentication error"));
+      }
 
-      if (pathname === "/ws") {
-         console.log("websocket on the backend reached");
-         const token = verifyTokenForWebSocket(request);
-
-         if (!token) {
-            socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-            socket.destroy();
-
-            return;
-         }
-
-         // storing user info on the request for later use
-         wss.handleUpgrade(request, socket, head, (ws) => {
-            wss.emit("connection", ws, request);
-         });
-      } else {
-         socket.destroy();
+      try {
+         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+         socket.data.user = decoded;
+         next();
+      } catch (error) {
+         next(new Error("Authentication error"));
       }
    });
 
-   // handle new websocket connnections
+   io.on("connection", (socket) => {
+      const userId = socket.data.user.id;
+      console.log(`User connected: ${userId}`);
 
-   wss.on("connection", (ws, request) => {
-      const user = (request as any).user;
-      const userId = user._id.toString();
+      // Store the socket connection for this user
+      connectedUsers.set(userId, socket.id);
 
-      console.log(`User ${userId} connected to WS`);
+      // Join user to their private room
+      socket.join(userId);
 
-      // store the connection
-      clients.set(userId, ws);
-
-      // initialize a user's room if it does not exists.
-      if (!userRooms.has(userId)) {
-         userRooms.set(userId, new Set());
-      }
-
-      // send a hello msg
-
-      ws.send(
-         JSON.stringify({
-            type: "conntected_established",
-            payload: {
-               message: "Connected to chat server",
-            },
-         })
-      );
-
-      // Handle incoming messages
-      ws.on("message", async (message: string) => {
+      // Listen for private messages
+      socket.on("private-message", async (data) => {
          try {
-            const parsedMessage: WSMessage = JSON.parse(message);
+            const { receiverId, content } = data;
+            const senderId = userId;
 
-            switch (parsedMessage.type) {
-               case "message":
-                  await handleChatMessage(userId, parsedMessage.payload);
-                  break;
+            // Find or create chat room
+            let chatRoom = await ChatRoom.findOne({
+               participants: { $all: [senderId, receiverId] },
+            });
 
-               case "join_room":
-                  await handleJoinRoom(userId, parsedMessage.payload.roomId);
-                  break;
-
-               case "leave_room":
-                  await handleLeaveRoom(userId, parsedMessage.payload.roomId);
-                  break;
-
-               case "typing":
-                  await handleTypingStatus(userId, parsedMessage.payload);
-                  break;
-
-               case "read":
-                  await handleReadStatus(userId, parsedMessage.payload);
-                  break;
-
-               default:
-                  console.warn(`Unknown message type: ${parsedMessage.type}`);
+            if (!chatRoom) {
+               chatRoom = await ChatRoom.create({
+                  participants: [senderId, receiverId],
+                  lastActivity: new Date(),
+               });
+            } else {
+               chatRoom.lastActivity = new Date();
             }
-         } catch (err) {
-            console.error("Error processing WebSocket message:", err);
-            ws.send(
-               JSON.stringify({
-                  type: "error",
-                  payload: { message: "Failed to process message" },
-               })
-            );
+
+            // Create and save the message
+            const newMessage = await Message.create({
+               sender: senderId,
+               receiver: receiverId,
+               content,
+               timestamp: new Date(),
+               read: false,
+            });
+
+            // Update chatroom with last message
+            chatRoom.lastMessage = newMessage._id as unknown as mongoose.Types.ObjectId;
+            await chatRoom.save();
+
+            // Get populated message to send to client
+            const populatedMessage = await Message.findById(newMessage._id)
+               .populate("sender", "name avatar")
+               .populate("receiver", "name avatar");
+
+            // Send to the receiver if they are online
+            if (connectedUsers.has(receiverId)) {
+               io.to(receiverId).emit("private-message", populatedMessage);
+            }
+
+            // Send back to the sender
+            socket.emit("private-message", populatedMessage);
+         } catch (error) {
+            console.error("Error handling message:", error);
+            socket.emit("error", { message: "Failed to send message" });
          }
       });
 
-      // Handle disconnection
-      ws.on("close", () => {
-         console.log(`User ${userId} disconnected from WebSocket`);
+      // Mark messages as read
+      socket.on("mark-read", async (data) => {
+         try {
+            const { messageIds } = data;
+            await Message.updateMany(
+               { _id: { $in: messageIds } },
+               { $set: { read: true } }
+            );
+            socket.emit("messages-marked-read", { messageIds });
+         } catch (error) {
+            console.error("Error marking messages as read:", error);
+         }
+      });
 
-         // Clean up the connection
-         clients.delete(userId);
-         userRooms.delete(userId);
+      // User typing indicator
+      socket.on("typing", (data) => {
+         const { receiverId } = data;
+         if (connectedUsers.has(receiverId)) {
+            io.to(receiverId).emit("typing", { userId });
+         }
+      });
+
+      // User stops typing
+      socket.on("stop-typing", (data) => {
+         const { receiverId } = data;
+         if (connectedUsers.has(receiverId)) {
+            io.to(receiverId).emit("stop-typing", { userId });
+         }
+      });
+
+      // Handle disconnect
+      socket.on("disconnect", () => {
+         console.log(`User disconnected: ${userId}`);
+         connectedUsers.delete(userId);
       });
    });
 
-   async function handleChatMessage(userId: string, payload: any) {
-      const { roomId, content } = payload;
-
-      // Save the message to the database
-      const message = await saveMessage(roomId, userId, content);
-
-      // Get the room to find participants
-      const room = await require("../models/ChatRoom").findById(roomId);
-
-      if (!room) {
-         return;
-      }
-
-      // Broadcast the message to all participants in the room
-      const messageToSend = {
-         type: "new_message",
-         payload: {
-            messageId: message._id,
-            roomId: roomId,
-            sender: userId,
-            content: content,
-            timestamp: message.timestamp,
-         },
-      };
-
-      // Send to all participants except sender
-      room.participants.forEach((participantId: string) => {
-         const participantIdStr = participantId.toString();
-         if (participantIdStr !== userId && clients.has(participantIdStr)) {
-            const client = clients.get(participantIdStr);
-            client?.send(JSON.stringify(messageToSend));
-         }
-      });
-   }
-
-   async function handleJoinRoom(userId: string, roomId: string) {
-      // Add the room to the user's set of rooms
-      const userRoomSet = userRooms.get(userId);
-      if (userRoomSet) {
-         userRoomSet.add(roomId);
-      }
-
-      // Get recent messages
-      const messages = await getChatRoomMessages(roomId, 50);
-
-      // Send room history to the user
-      const client = clients.get(userId);
-      if (client) {
-         client.send(
-            JSON.stringify({
-               type: "room_history",
-               payload: {
-                  roomId,
-                  messages,
-               },
-            })
-         );
-      }
-   }
-
-   async function handleLeaveRoom(userId: string, roomId: string) {
-      // Remove the room from the user's set of rooms
-      const userRoomSet = userRooms.get(userId);
-      if (userRoomSet) {
-         userRoomSet.delete(roomId);
-      }
-   }
-
-   async function handleTypingStatus(userId: string, payload: any) {
-      const { roomId, isTyping } = payload;
-
-      // Get the room to find participants
-      const room = await require("../models/ChatRoom").findById(roomId);
-
-      if (!room) {
-         return;
-      }
-
-      // Notify other participants about typing status
-      const statusMessage = {
-         type: "typing_status",
-         payload: {
-            roomId,
-            userId,
-            isTyping,
-         },
-      };
-
-      // Send to all participants except sender
-      room.participants.forEach((participantId: string) => {
-         const participantIdStr = participantId.toString();
-         if (participantIdStr !== userId && clients.has(participantIdStr)) {
-            const client = clients.get(participantIdStr);
-            client?.send(JSON.stringify(statusMessage));
-         }
-      });
-   }
-
-   async function handleReadStatus(userId: string, payload: any) {
-      const { roomId, messageId } = payload;
-
-      // Implement read receipt logic here if needed
-      // This is a placeholder for message read status functionality
-   }
-
-   return wss;
+   return io;
 }

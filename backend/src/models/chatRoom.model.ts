@@ -1,24 +1,18 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { ChatRoom } from "../shared/types";
+import mongoose, { Document, Schema } from "mongoose";
 
-const ChatRoomSchema = new Schema({
+export interface IChatRoom extends Document {
+   participants: mongoose.Types.ObjectId[];
+   lastMessage?: mongoose.Types.ObjectId;
+   lastActivity: Date;
+}
+
+const chatRoomSchema = new Schema<IChatRoom>({
    participants: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
-   lastMessage: { type: Schema.Types.ObjectId, ref: "ChatMessage" },
-   createdAt: { type: Date, default: Date.now },
-   updatedAt: { type: Date, default: Date.now },
+   lastMessage: { type: Schema.Types.ObjectId, ref: "Message" },
+   lastActivity: { type: Date, default: Date.now },
 });
 
-// Index for quick lookup of chat rooms by participants
-ChatRoomSchema.index({ participants: 1 });
+// Create a compound index to ensure unique chat rooms between two users
+chatRoomSchema.index({ participants: 1 }, { unique: true });
 
-// Method to find a chat room between two users
-ChatRoomSchema.statics.findByParticipants = async function (
-   user1Id: string,
-   user2Id: string
-) {
-   return await this.findOne({
-      participants: { $all: [user1Id, user2Id], $size: 2 },
-   });
-};
-
-export default mongoose.model<ChatRoom & Document>("ChatRoom", ChatRoomSchema);
+export default mongoose.model<IChatRoom>("ChatRoom", chatRoomSchema);
