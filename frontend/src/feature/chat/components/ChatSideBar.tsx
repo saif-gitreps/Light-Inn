@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { formatDistanceToNow } from "date-fns";
 import { ChatRoom, useChatRooms } from "../api/useChat";
@@ -12,11 +12,19 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
    const { userId } = useParams<{ userId: string }>();
    const { rooms, isLoading, error } = useChatRooms();
 
+   const navigate = useNavigate();
+
+   // Function to open the new conversation modal/page
+   const openNewConversation = () => {
+      navigate("/inbox/new"); // Navigate to a route that shows the new conversation component
+   };
+
    if (isLoading) {
       return <div className="p-4">Loading conversations...</div>;
    }
 
    if (error) {
+      console.log(error);
       return <div className="p-4 text-red-500">Error loading conversations</div>;
    }
 
@@ -29,8 +37,14 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
 
    return (
       <div className="w-full h-full overflow-y-auto border-r">
-         <div className="p-4 border-b">
+         <div className="p-4 border-b flex justify-between items-center">
             <h2 className="font-bold text-lg">Messages</h2>
+            <button
+               onClick={openNewConversation}
+               className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm"
+            >
+               New Chat
+            </button>
          </div>
 
          {rooms.length === 0 ? (

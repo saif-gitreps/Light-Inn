@@ -25,9 +25,7 @@ const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
    const [toast, setToast] = useState<ToastMessage | undefined>(undefined);
 
-   const { data: currentUser, isError } = useFetchCurrentUser({ retry: 2 });
-
-   console.log(currentUser);
+   const { data: currentUser, isError } = useFetchCurrentUser({ retry: false });
 
    return (
       <AppContext.Provider

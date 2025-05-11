@@ -13,6 +13,7 @@ import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
 import Inbox from "./pages/Inbox";
+import NewChat from "./pages/NewChat";
 
 function App() {
    const { isAuth } = useAppContext();
@@ -115,6 +116,14 @@ function App() {
                      element={
                         <Layout>
                            <Inbox />
+                        </Layout>
+                     }
+                  />
+                  <Route
+                     path="/inbox/new"
+                     element={
+                        <Layout>
+                           <NewChat />
                         </Layout>
                      }
                   />

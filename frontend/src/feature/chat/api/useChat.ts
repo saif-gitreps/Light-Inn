@@ -47,7 +47,7 @@ export const useChatRooms = () => {
       const socket = getSocket();
       if (!socket) return;
 
-      const handleNewMessage = (message: Message) => {
+      const handleNewMessage = () => {
          // Update the chat rooms list when a new message arrives
          queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
       };
@@ -138,7 +138,7 @@ export const useChatMessages = (userId?: string) => {
          if (!socket || !userId)
             throw new Error("Socket not connected or userId missing");
 
-         return new Promise<void>((resolve, reject) => {
+         return new Promise<void>((resolve) => {
             socket.emit("private-message", { receiverId: userId, content });
             resolve();
          });

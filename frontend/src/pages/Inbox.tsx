@@ -9,8 +9,6 @@ const Inbox: React.FC = () => {
    const location = useLocation();
    const { currentUser, isAuth } = useAppContext();
 
-   console.log(isAuth);
-
    // Initialize socket on component mount
    useEffect(() => {
       initializeSocket();
@@ -28,10 +26,10 @@ const Inbox: React.FC = () => {
    return (
       <div className="flex h-screen">
          <div className="w-1/3 border-r">
-            <ChatSidebar currentUserId={"6749b5818e962b621e869bd1"} />
+            <ChatSidebar currentUserId={currentUser?._id as string} />
          </div>
          <div className="w-2/3">
-            <ChatInterface currentUserId={"6749b5818e962b621e869bd1"} />
+            <ChatInterface currentUserId={currentUser?._id as string} />
          </div>
       </div>
    );
