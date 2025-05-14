@@ -120,6 +120,14 @@ function App() {
                      }
                   />
                   <Route
+                     path="/inbox/:userId"
+                     element={
+                        <Layout>
+                           <Inbox />
+                        </Layout>
+                     }
+                  />
+                  <Route
                      path="/inbox/new"
                      element={
                         <Layout>

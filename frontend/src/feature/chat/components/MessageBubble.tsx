@@ -15,18 +15,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isCurrentUser })
       <div className={`flex mb-4 ${isCurrentUser ? "justify-end" : "justify-start"}`}>
          {!isCurrentUser && (
             <div className="flex-shrink-0 mr-2">
-               {message.sender.firstName ? (
-                  // <img
-                  //    src={message.sender.avatar}
-                  //    alt={message.sender.name}
-                  //    className="w-8 h-8 rounded-full"
-                  // />
-                  <></>
-               ) : (
-                  <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                     {message.sender.firstName.charAt(0).toUpperCase()}
-                  </div>
-               )}
+               <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  {message.sender.firstName}
+               </div>
             </div>
          )}
 
@@ -54,18 +45,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isCurrentUser })
 
          {isCurrentUser && (
             <div className="flex-shrink-0 ml-2">
-               {message.sender.firstName ? (
-                  // <img
-                  //    src={message.sender.avatar}
-                  //    alt={message.sender.name}
-                  //    className="w-8 h-8 rounded-full"
-                  // />
-                  <></>
-               ) : (
-                  <div className="w-8 h-8 bg-blue-300 rounded-full flex items-center justify-center">
-                     {message.sender.firstName.charAt(0).toUpperCase()}
-                  </div>
-               )}
+               <div className="w-8 h-8 bg-blue-300 rounded-full flex items-center justify-center">
+                  {message.sender.firstName}
+               </div>
             </div>
          )}
       </div>

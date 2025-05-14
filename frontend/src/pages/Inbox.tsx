@@ -1,27 +1,22 @@
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { disconnectSocket, initializeSocket } from "../lib/websocket";
 import ChatInterface from "../feature/chat/components/ChatInterface";
 import ChatSidebar from "../feature/chat/components/ChatSideBar";
 import { useAppContext } from "../contexts/AppContext";
 
 const Inbox: React.FC = () => {
-   const location = useLocation();
-   const { currentUser, isAuth } = useAppContext();
+   const { currentUser } = useAppContext();
 
-   // Initialize socket on component mount
    useEffect(() => {
       initializeSocket();
 
-      // Cleanup on unmount
       return () => {
          disconnectSocket();
       };
    }, [currentUser]);
 
-   // if (!currentUser) {
-   //    return <Navigate to="/" state={{ from: location }} replace />;
-   // }
+   const { userId } = useParams<{ userId: string }>();
 
    return (
       <div className="flex h-screen">
@@ -29,7 +24,13 @@ const Inbox: React.FC = () => {
             <ChatSidebar currentUserId={currentUser?._id as string} />
          </div>
          <div className="w-2/3">
-            <ChatInterface currentUserId={currentUser?._id as string} />
+            {userId ? (
+               <ChatInterface currentUserId={currentUser?._id as string} />
+            ) : (
+               <div className="h-full flex items-center justify-center text-gray-500">
+                  Select a conversation to start chatting
+               </div>
+            )}
          </div>
       </div>
    );

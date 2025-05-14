@@ -8,20 +8,9 @@ const router = express.Router();
 
 router.get("/me", verifyToken, me);
 
-router.post(
-   "/sign-up",
-   [
-      check("firstName", "First name is required").isString(),
-      check("lastName", "Last name is required").isString(),
-      check("email", "Email is required").isEmail(),
-      check("password", "Password is required").isLength({ min: 6 }),
-   ],
-   signUp
-);
-
 router.get("/search", verifyToken, async (req, res): Promise<any> => {
    try {
-      const { q } = req.query;
+      const { name } = req.query;
       const currentUserId = req.userId;
 
       // if (!q || typeof q !== "string") {
@@ -32,10 +21,8 @@ router.get("/search", verifyToken, async (req, res): Promise<any> => {
       // Exclude the current user from results
       const users = await User.find({
          _id: { $ne: currentUserId },
-         name: { $regex: q, $options: "i" },
-      })
-         .select("name avatar")
-         .limit(10);
+         // name: { $regex: name, $options: "i" },
+      }).limit(10);
 
       res.status(200).json(users);
    } catch (error) {
@@ -43,5 +30,16 @@ router.get("/search", verifyToken, async (req, res): Promise<any> => {
       res.status(500).json({ message: "Failed to search users" });
    }
 });
+
+router.post(
+   "/sign-up",
+   [
+      check("firstName", "First name is required").isString(),
+      check("lastName", "Last name is required").isString(),
+      check("email", "Email is required").isEmail(),
+      check("password", "Password is required").isLength({ min: 6 }),
+   ],
+   signUp
+);
 
 export default router;

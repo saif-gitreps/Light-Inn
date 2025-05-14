@@ -30,10 +30,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
 
    // Find the other participant in each room (not the current user)
    const getChatPartner = (room: ChatRoom) => {
-      return (
-         room.participants.find((p) => p._id !== currentUserId) || room.participants[0]
-      );
+      return room.participants[0]._id === userId
+         ? room.participants[0]
+         : room.participants[1];
    };
+
+   console.log(rooms);
 
    return (
       <div className="w-full h-full overflow-y-auto border-r">
@@ -62,28 +64,18 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
                   return (
                      <Link
                         key={room._id}
-                        to={`/messages/${partner._id}`}
+                        to={`/inbox/${partner._id}`}
                         className={`block p-4 border-b hover:bg-gray-100 ${
                            isActive ? "bg-gray-100" : ""
                         }`}
                      >
                         <div className="flex items-center">
-                           {partner.firstName ? (
-                              // <img
-                              //    src={partner.avatar}
-                              //    alt={partner.name}
-                              //    className="w-12 h-12 rounded-full mr-3"
-                              // />
-                              <></>
-                           ) : (
-                              <div className="w-12 h-12 bg-gray-300 rounded-full mr-3 flex items-center justify-center">
-                                 {partner.firstName.charAt(0).toUpperCase()}
-                              </div>
-                           )}
-
                            <div className="flex-1">
                               <div className="flex justify-between items-center">
-                                 <h3 className="font-semibold">{partner.firstName}</h3>
+                                 <h3 className="font-semibold">
+                                    {partner?.firstName + " " + partner?.lastName ||
+                                       "User"}
+                                 </h3>
                                  {room.lastActivity && (
                                     <span className="text-xs text-gray-500">
                                        {formatDistanceToNow(new Date(room.lastActivity), {

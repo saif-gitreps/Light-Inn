@@ -11,7 +11,7 @@ router.get("/rooms", verifyToken, async (req, res) => {
       const userId = req.userId;
 
       const rooms = await ChatRoom.find({ participants: userId })
-         .populate("participants", "name avatar")
+         .populate("participants", "_id firstName lastName email")
          .populate({
             path: "lastMessage",
             select: "content timestamp read sender",

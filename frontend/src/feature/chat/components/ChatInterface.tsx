@@ -74,10 +74,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
    };
 
    if (!userId) {
+      console.log("userId is not found");
       return (
          <div className="p-4 text-center">Select a conversation to start chatting</div>
       );
    }
+
+   console.log("Chat interface loaded");
 
    return (
       <div className="flex flex-col h-full">
