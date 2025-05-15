@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { BookCheck, Hotel, House, Search } from "lucide-react";
+import { BookCheck, Hotel, House, Inbox, Search } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "../feature/auth/components/SignOutButton";
 import SearchBar from "../feature/Search/components/SearchBar";
@@ -22,7 +22,7 @@ function Header() {
                   <PopoverTrigger className="flex items-center space-x-1">
                      <Button variant="link" className="text-white text-lg" asChild>
                         <span>
-                           <span className="hidden md:inline">Search</span>
+                           <span className="hidden lg:inline">Search</span>
                            <Search className="hover:opacity-80" />
                         </span>
                      </Button>
@@ -47,6 +47,12 @@ function Header() {
                         <House />
                         <Link to="/my-hotels" className="hidden sm:block">
                            My Hotels
+                        </Link>
+                     </Button>
+                     <Button variant="link" className="p-2 text-white">
+                        <Inbox />
+                        <Link to="/inbox" className="hidden sm:block">
+                           Inbox
                         </Link>
                      </Button>
                      <SignOutButton />

@@ -80,8 +80,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
       );
    }
 
-   console.log("Chat interface loaded");
-
    return (
       <div className="flex flex-col h-full">
          <div className="flex-1 overflow-y-auto p-4">

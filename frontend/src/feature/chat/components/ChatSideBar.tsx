@@ -35,8 +35,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
          : room.participants[1];
    };
 
-   console.log(rooms);
-
    return (
       <div className="w-full h-full overflow-y-auto border-r">
          <div className="p-4 border-b flex justify-between items-center">

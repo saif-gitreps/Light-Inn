@@ -23,5 +23,6 @@ const searchUsers = async (name: string): Promise<UserType[]> => {
 export const useSearchUsers = (name: string) => {
    return useQuery("searchUser", {
       queryFn: () => searchUsers(name),
+      enabled: !!name,
    });
 };
