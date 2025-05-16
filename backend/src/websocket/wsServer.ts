@@ -100,8 +100,8 @@ export default function initializeSocket(server: http.Server) {
 
                // Get populated message to send to client
                const populatedMessage = await Message.findById(newMessage._id)
-                  .populate("sender", "name avatar")
-                  .populate("receiver", "name avatar");
+                  .populate("sender", "_id firstName lastName")
+                  .populate("receiver", "_id firstName lastName");
 
                // Send to the receiver if they are online
                if (connectedUsers.has(receiverId)) {

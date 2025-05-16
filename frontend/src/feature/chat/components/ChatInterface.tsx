@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 import { Message, useChatMessages } from "../api/useChat";
+import { useAppContext } from "../../../contexts/AppContext";
 
 interface ChatInterfaceProps {
    currentUserId: string;
@@ -11,6 +12,7 @@ interface ChatInterfaceProps {
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
    const { userId } = useParams<{ userId: string }>();
+   const { currentUser } = useAppContext();
    const [messageInput, setMessageInput] = useState("");
    const messagesEndRef = useRef<HTMLDivElement>(null);
    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -87,7 +89,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
                <MessageBubble
                   key={message._id}
                   message={message}
-                  isCurrentUser={message.sender._id === currentUserId}
+                  isCurrentUser={message.sender._id === currentUser?._id}
                />
             ))}
             {isTyping && <TypingIndicator />}
