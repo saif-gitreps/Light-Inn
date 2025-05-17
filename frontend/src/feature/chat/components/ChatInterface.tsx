@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 import { Message, useChatMessages } from "../api/useChat";
@@ -8,10 +6,15 @@ import { useAppContext } from "../../../contexts/AppContext";
 
 interface ChatInterfaceProps {
    currentUserId: string;
+   chatPartnerId: string;
+   chatPartnerName: string;
 }
 
-const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
-   const { userId } = useParams<{ userId: string }>();
+const ChatInterface: React.FC<ChatInterfaceProps> = ({
+   currentUserId,
+   chatPartnerId,
+   chatPartnerName,
+}) => {
    const { currentUser } = useAppContext();
    const [messageInput, setMessageInput] = useState("");
    const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -24,7 +27,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
       markAsRead,
       sendTypingIndicator,
       sendStopTypingIndicator,
-   } = useChatMessages(userId);
+   } = useChatMessages(chatPartnerId);
 
    // Scroll to bottom when messages change
    useEffect(() => {
@@ -46,7 +49,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
 
    const handleSendMessage = (e: React.FormEvent) => {
       e.preventDefault();
-      if (messageInput.trim() && userId) {
+      if (messageInput.trim() && chatPartnerId) {
          sendMessage.mutate(messageInput);
          setMessageInput("");
          // Clear any typing indicator timeout
@@ -75,7 +78,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
       }, 2000);
    };
 
-   if (!userId) {
+   if (!chatPartnerId) {
       console.log("userId is not found");
       return (
          <div className="p-4 text-center">Select a conversation to start chatting</div>
@@ -84,7 +87,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ currentUserId }) => {
 
    return (
       <div className="flex flex-col h-full">
+         <h1 className="text-xl font-bold">
+            Chatting with: <span className="text-gray-700">{chatPartnerName}</span>
+         </h1>
          <div className="flex-1 overflow-y-auto p-4">
+            {messages.length === 0 && (
+               <span className="text-gray-600">Send a hello!</span>
+            )}
+
             {messages.map((message: Message) => (
                <MessageBubble
                   key={message._id}

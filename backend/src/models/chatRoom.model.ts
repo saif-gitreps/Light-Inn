@@ -13,6 +13,12 @@ const chatRoomSchema = new Schema<IChatRoom>({
 });
 
 // Create a compound index to ensure unique chat rooms between two users
-chatRoomSchema.index({ participants: 1 }, { unique: true });
+// chatRoomSchema.index({ participants: 1 }, { unique: true });
+
+chatRoomSchema.pre("save", function (next) {
+   // Sort the participant IDs to ensure consistent ordering
+   this.participants.sort();
+   next();
+});
 
 export default mongoose.model<IChatRoom>("ChatRoom", chatRoomSchema);

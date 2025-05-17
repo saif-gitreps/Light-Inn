@@ -30,7 +30,7 @@ export interface ChatRoom {
 
 // Hook to get all chat rooms for the current user
 export const useChatRooms = () => {
-   const queryClient = useQueryClient();
+   // const queryClient = useQueryClient();
 
    const { data: rooms = [], ...rest } = useQuery({
       queryKey: ["chatRooms"],
@@ -43,21 +43,21 @@ export const useChatRooms = () => {
    });
 
    // Socket listener for new messages to update rooms
-   useEffect(() => {
-      const socket = getSocket();
-      if (!socket) return;
+   // useEffect(() => {
+   //    const socket = getSocket();
+   //    if (!socket) return;
 
-      const handleNewMessage = () => {
-         // Update the chat rooms list when a new message arrives
-         queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
-      };
+   //    const handleNewMessage = () => {
+   //       // Update the chat rooms list when a new message arrives
+   //       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
+   //    };
 
-      socket.on("private-message", handleNewMessage);
+   //    socket.on("private-message", handleNewMessage);
 
-      return () => {
-         socket.off("private-message", handleNewMessage);
-      };
-   }, [queryClient]);
+   //    return () => {
+   //       socket.off("private-message", handleNewMessage);
+   //    };
+   // }, [queryClient]);
 
    return { rooms, ...rest };
 };
@@ -83,12 +83,13 @@ export const useChatMessages = (userId?: string) => {
       enabled: !!userId,
    });
 
-   const messages = data?.messages || [];
-   const roomId = data?.roomId || "";
+   const messages: Message[] = data?.messages || [];
+   const roomId: string = data?.roomId || "";
 
    // Socket listeners for real-time updates
    useEffect(() => {
       const socket = getSocket();
+
       if (!socket || !userId) return;
 
       const handleNewMessage = (message: Message) => {
@@ -98,6 +99,7 @@ export const useChatMessages = (userId?: string) => {
             message._id
          ) {
             queryClient.invalidateQueries({ queryKey: ["chatMessages", userId] });
+            // queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
 
             // Mark the message as read if we're the receiver
             if (message.receiver._id !== userId && !message.read) {

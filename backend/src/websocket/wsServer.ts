@@ -75,6 +75,8 @@ export default function initializeSocket(server: http.Server) {
                   participants: { $all: [senderId, receiverId] },
                });
 
+               //console.log(chatRoom);
+
                if (!chatRoom) {
                   chatRoom = await ChatRoom.create({
                      participants: [senderId, receiverId],
@@ -83,6 +85,8 @@ export default function initializeSocket(server: http.Server) {
                } else {
                   chatRoom.lastActivity = new Date();
                }
+
+               console.log(chatRoom);
 
                // Create and save the message
                const newMessage = await Message.create({

@@ -14,6 +14,7 @@ import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
 import Inbox from "./pages/Inbox";
 import NewChat from "./pages/NewChat";
+import Chat from "./pages/Chat";
 
 function App() {
    const { isAuth } = useAppContext();
@@ -120,10 +121,10 @@ function App() {
                      }
                   />
                   <Route
-                     path="/inbox/:userId"
+                     path="/chat/:partnerId/:partnerName"
                      element={
                         <Layout>
-                           <Inbox />
+                           <Chat />
                         </Layout>
                      }
                   />

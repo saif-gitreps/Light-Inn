@@ -48,7 +48,7 @@ function NewChat() {
                </div>
                <div className="text-md">({user?.email ? user.email : "email"})</div>
 
-               <Link to={`/inbox/${user._id}`}>
+               <Link to={`/chat/${user._id}/${user.firstName + " " + user.lastName}`}>
                   <MessageSquare className="stroke-blue-600 hover:opacity-60" />
                </Link>
             </div>

@@ -78,13 +78,17 @@ router.get("/messages/user/:userId", verifyToken, async (req, res) => {
          participants: { $all: [currentUserId, otherUserId] },
       });
 
-      if (!room) {
+      console.log(room);
+
+      if (!room || room === null) {
          // Create new room if first time chatting
          room = await ChatRoom.create({
             participants: [currentUserId, otherUserId],
             lastActivity: new Date(),
          });
       }
+
+      console.log(room);
 
       // Get messages between these users
       const messages = await Message.find({
@@ -93,8 +97,8 @@ router.get("/messages/user/:userId", verifyToken, async (req, res) => {
             { sender: otherUserId, receiver: currentUserId },
          ],
       })
-         .populate("sender", "name avatar")
-         .populate("receiver", "name avatar")
+         .populate("sender", "_id firstName lastName")
+         .populate("receiver", "_id firstName lastName")
          .sort({ timestamp: 1 });
 
       res.status(200).json({

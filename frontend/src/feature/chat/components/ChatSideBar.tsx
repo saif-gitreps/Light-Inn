@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { formatDistanceToNow } from "date-fns";
 import { ChatRoom, useChatRooms } from "../api/useChat";
+import { useAppContext } from "../../../contexts/AppContext";
 
 interface ChatSidebarProps {
    currentUserId: string;
@@ -11,6 +12,7 @@ interface ChatSidebarProps {
 const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
    const { userId } = useParams<{ userId: string }>();
    const { rooms, isLoading, error } = useChatRooms();
+   const { currentUser } = useAppContext();
 
    const navigate = useNavigate();
 
@@ -30,7 +32,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
 
    // Find the other participant in each room (not the current user)
    const getChatPartner = (room: ChatRoom) => {
-      return room.participants[0]._id === userId
+      return room.participants[0]._id === userId &&
+         room.participants[0]._id !== currentUser?._id
          ? room.participants[0]
          : room.participants[1];
    };
@@ -62,7 +65,9 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
                   return (
                      <Link
                         key={room._id}
-                        to={`/inbox/${partner._id}`}
+                        to={`/chat/${partner._id}/${
+                           partner.firstName + " " + partner.lastName
+                        }`}
                         className={`block p-4 border-b hover:bg-gray-100 ${
                            isActive ? "bg-gray-100" : ""
                         }`}
