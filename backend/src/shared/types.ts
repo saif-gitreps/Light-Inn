@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 export type HotelType = {
    _id: string;
    userId: string;
