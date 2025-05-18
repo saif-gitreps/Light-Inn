@@ -1,11 +1,14 @@
-import { useParams } from "react-router-dom";
-import { Star } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { MessageCircle, Star } from "lucide-react";
 import { useFetchHotelById } from "../feature/hotel/api/useFetchHotelById";
 import BookHotelForm from "../feature/booking/components/BookHotelForm";
+import { Button } from "../components/ui/button";
+import { useAppContext } from "../contexts/AppContext";
 
 function Detail() {
    const { id } = useParams();
    const { data: hotel, isLoading } = useFetchHotelById(id as string);
+   const { currentUser } = useAppContext();
 
    if (isLoading) {
       return <DetailSkeleton />;
@@ -17,14 +20,22 @@ function Detail() {
 
    return (
       <div className="space-y-6">
-         <div className="flex justify-between">
-            <h1 className="text-3xl font-bold">{hotel.name}</h1>
+         <div className="flex sm:flex-row flex-col justify-between space-y-3">
+            <div className="flex sm:flex-row flex-col items-center sm:space-x-3 space-y-3">
+               <h1 className="text-3xl font-bold">{hotel.name}</h1>
 
-            <span className="flex">
-               {Array.from({ length: hotel.rating }).map((_, index) => (
-                  <Star key={index} className="fill-yellow-400" />
-               ))}
-            </span>
+               <span className="flex items-center">
+                  {Array.from({ length: hotel.rating }).map((_, index) => (
+                     <Star key={index} className="fill-yellow-400" />
+                  ))}
+               </span>
+            </div>
+            {!(currentUser?._id === hotel.userId) && (
+               <Button variant="outline">
+                  <Link to={`/chat/${hotel.userId}/Owner`}>Talk with the owner </Link>
+                  <MessageCircle />
+               </Button>
+            )}
          </div>
 
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

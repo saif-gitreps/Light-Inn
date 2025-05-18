@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { BookCheck, Hotel, House, Search } from "lucide-react";
+import { BookCheck, Hotel, House, Inbox, Search } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "../feature/auth/components/SignOutButton";
 import SearchBar from "../feature/Search/components/SearchBar";
@@ -15,14 +15,19 @@ function Header() {
          <div className="container mx-auto flex justify-between">
             <div className="flex items-center space-x-4">
                <span className="text-2xl text-white font-semibold tracking-tighter flex items-center hover:opacity-80 underline">
-                  <Hotel size={26} className="hidden md:inline" />
-                  <Link to="/">Light Inn</Link>
+                  <Hotel size={26} className="" />
+                  <Link to="/" className="hidden md:inline">
+                     Light Inn
+                  </Link>
+                  <Link to="/" className="md:hidden inline">
+                     L.i
+                  </Link>
                </span>
                <Popover>
                   <PopoverTrigger className="flex items-center space-x-1">
                      <Button variant="link" className="text-white text-lg" asChild>
                         <span>
-                           <span className="hidden md:inline">Search</span>
+                           <span className="hidden lg:inline">Search</span>
                            <Search className="hover:opacity-80" />
                         </span>
                      </Button>
@@ -47,6 +52,12 @@ function Header() {
                         <House />
                         <Link to="/my-hotels" className="hidden sm:block">
                            My Hotels
+                        </Link>
+                     </Button>
+                     <Button variant="link" className="p-2 text-white">
+                        <Inbox />
+                        <Link to="/inbox" className="hidden sm:block">
+                           Inbox
                         </Link>
                      </Button>
                      <SignOutButton />

@@ -31,7 +31,7 @@ export const useSignUp = () => {
       onSuccess: async () => {
          showToast({ message: "Account created successfully!", type: "SUCCESS" });
 
-         await queryClient.invalidateQueries("validateToken");
+         await queryClient.invalidateQueries("currentUser");
 
          navigate("/");
       },

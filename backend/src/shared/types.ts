@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export type HotelType = {
    _id: string;
    userId: string;
@@ -51,3 +53,24 @@ export type PaymentIntentResponse = {
    clientSecret: string;
    totalCost: number;
 };
+
+export interface ChatMessage {
+   _id: string;
+   chatRoomId: string;
+   sender: string;
+   content: string;
+   timestamp: Date;
+}
+
+export interface ChatRoom {
+   _id: string;
+   participants: string[];
+   lastMessage?: ChatMessage;
+   createdAt: Date;
+   updatedAt: Date;
+}
+
+export interface WSMessage {
+   type: "message" | "join_room" | "leave_room" | "typing" | "read";
+   payload: any;
+}

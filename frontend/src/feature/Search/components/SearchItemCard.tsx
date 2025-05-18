@@ -6,12 +6,15 @@ import { HotelType } from "../../../../../backend/src/shared/types";
 export default function SearchItemCard({ hotel }: { hotel: HotelType }) {
    return (
       <div className="grid grid-cols-1 xl:grid-cols-[2fr_3fr] border border-slate-300 rounded-lg p-8 gap-8">
-         <div className="w-full h-[300px]">
-            <img
-               src={hotel.imageUrls[0]}
-               className="w-full h-full object-cover object-center"
-            />
+         <div className="w-full h-[300px] hover:opacity-90">
+            <Link to={`/detail/${hotel._id}`}>
+               <img
+                  src={hotel.imageUrls[0]}
+                  className="w-full h-full object-cover object-center"
+               />
+            </Link>
          </div>
+
          <div className="grid grid-rows-[1fr_2fr_1fr]">
             <div>
                <div className="flex items-center">
@@ -33,11 +36,11 @@ export default function SearchItemCard({ hotel }: { hotel: HotelType }) {
             </div>
 
             <div>
-               <div className="line-clamp-4">{hotel.description}</div>
+               <div className="sm:line-clamp-4">{hotel.description}</div>
             </div>
 
-            <div className="grid grid-cols-2 items-end whitespace-nowrap">
-               <div className="flex gap-1 items-center">
+            <div className="grid sm:grid-cols-2 grid-cols-1 items-end whitespace-nowrap">
+               <div className="flex flex-wrap gap-1 items-center">
                   {hotel.facilities.slice(0, 3).map((facility) => (
                      <span
                         key={facility}

@@ -12,6 +12,9 @@ import Details from "./pages/Details";
 import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
+import Inbox from "./pages/Inbox";
+import NewChat from "./pages/NewChat";
+import Chat from "./pages/Chat";
 
 function App() {
    const { isAuth } = useAppContext();
@@ -76,6 +79,7 @@ function App() {
                         </Layout>
                      }
                   />
+
                   <Route
                      path="/add-hotel"
                      element={
@@ -105,6 +109,30 @@ function App() {
                      element={
                         <Layout>
                            <EditHotel />
+                        </Layout>
+                     }
+                  />
+                  <Route
+                     path="/inbox"
+                     element={
+                        <Layout>
+                           <Inbox />
+                        </Layout>
+                     }
+                  />
+                  <Route
+                     path="/chat/:partnerId/:partnerName"
+                     element={
+                        <Layout>
+                           <Chat />
+                        </Layout>
+                     }
+                  />
+                  <Route
+                     path="/inbox/new"
+                     element={
+                        <Layout>
+                           <NewChat />
                         </Layout>
                      }
                   />
