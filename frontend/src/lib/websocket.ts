@@ -3,8 +3,6 @@ import { io, Socket } from "socket.io-client"; // Assuming you have this
 let socket: Socket | null = null;
 
 export const initializeSocket = () => {
-   // const token = getAuthToken();
-
    if (!socket) {
       socket = io(import.meta.env.VITE_API_BASE_URL || "http://localhost:5000", {
          autoConnect: true,

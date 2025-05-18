@@ -3,10 +3,12 @@ import { MessageCircle, Star } from "lucide-react";
 import { useFetchHotelById } from "../feature/hotel/api/useFetchHotelById";
 import BookHotelForm from "../feature/booking/components/BookHotelForm";
 import { Button } from "../components/ui/button";
+import { useAppContext } from "../contexts/AppContext";
 
 function Detail() {
    const { id } = useParams();
    const { data: hotel, isLoading } = useFetchHotelById(id as string);
+   const { currentUser } = useAppContext();
 
    if (isLoading) {
       return <DetailSkeleton />;
@@ -28,10 +30,12 @@ function Detail() {
                   ))}
                </span>
             </div>
-            <Button variant="outline">
-               <Link to={`/chat/${hotel.userId}/Owner`}>Talk with the owner </Link>
-               <MessageCircle />
-            </Button>
+            {!(currentUser?._id === hotel.userId) && (
+               <Button variant="outline">
+                  <Link to={`/chat/${hotel.userId}/Owner`}>Talk with the owner </Link>
+                  <MessageCircle />
+               </Button>
+            )}
          </div>
 
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
