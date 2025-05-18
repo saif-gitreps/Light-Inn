@@ -34,7 +34,7 @@ export const useSignIn = () => {
       onSuccess: async () => {
          showToast({ message: "Welcome back!", type: "SUCCESS" });
 
-         await queryClient.invalidateQueries("validateToken");
+         await queryClient.invalidateQueries("currentUser");
 
          if (location.state?.from?.pathname) {
             navigate(location.state?.from?.pathname);

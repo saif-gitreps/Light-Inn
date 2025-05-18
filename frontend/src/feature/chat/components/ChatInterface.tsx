@@ -113,6 +113,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                {chatPartnerName === "" ? "Owner" : chatPartnerName}
             </span>
          </h1>
+
          <div className="flex-1 overflow-y-auto p-4">
             {messages.length === 0 && (
                <span className="text-gray-600">Send a hello!</span>
@@ -138,6 +139,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   onChange={handleInputChange}
                   rows={1}
                />
+
                <Button
                   type="submit"
                   disabled={!messageInput.trim()}

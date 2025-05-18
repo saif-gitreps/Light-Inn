@@ -15,8 +15,13 @@ function Header() {
          <div className="container mx-auto flex justify-between">
             <div className="flex items-center space-x-4">
                <span className="text-2xl text-white font-semibold tracking-tighter flex items-center hover:opacity-80 underline">
-                  <Hotel size={26} className="hidden md:inline" />
-                  <Link to="/">Light Inn</Link>
+                  <Hotel size={26} className="" />
+                  <Link to="/" className="hidden md:inline">
+                     Light Inn
+                  </Link>
+                  <Link to="/" className="md:hidden inline">
+                     L.i
+                  </Link>
                </span>
                <Popover>
                   <PopoverTrigger className="flex items-center space-x-1">

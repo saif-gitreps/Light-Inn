@@ -5,13 +5,6 @@ import { getSocket } from "../../../lib/websocket";
 import API_BASE_URL from "../../../config/base-url";
 import { UserType } from "../../../../../backend/src/shared/types";
 
-// Types
-// export interface User {
-//    _id: string;
-//    name: string;
-//    avatar?: string;
-// }
-
 export interface Message {
    _id: string;
    content: string;
@@ -41,23 +34,6 @@ export const useChatRooms = () => {
          return response.data;
       },
    });
-
-   // Socket listener for new messages to update rooms
-   // useEffect(() => {
-   //    const socket = getSocket();
-   //    if (!socket) return;
-
-   //    const handleNewMessage = () => {
-   //       // Update the chat rooms list when a new message arrives
-   //       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
-   //    };
-
-   //    socket.on("private-message", handleNewMessage);
-
-   //    return () => {
-   //       socket.off("private-message", handleNewMessage);
-   //    };
-   // }, [queryClient]);
 
    return { rooms, ...rest };
 };
