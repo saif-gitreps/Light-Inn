@@ -3,6 +3,9 @@ import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 import { Message, useChatMessages } from "../api/useChat";
 import { useAppContext } from "../../../contexts/AppContext";
+import { Button } from "../../../components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface ChatInterfaceProps {
    currentUserId: string;
@@ -101,7 +104,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
    return (
       <div className="flex flex-col h-full">
          <h1 className="text-xl font-bold">
-            Chatting with: <span className="text-gray-700">{chatPartnerName}</span>
+            <Button variant="outline">
+               <Link to="/inbox" className="flex space-x-2 items-center">
+                  <ArrowLeft /> Back
+               </Link>
+            </Button>{" "}
+            <span className="text-gray-600">
+               {chatPartnerName === "" ? "Owner" : chatPartnerName}
+            </span>
          </h1>
          <div className="flex-1 overflow-y-auto p-4">
             {messages.length === 0 && (
@@ -119,22 +129,22 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
             <div ref={messagesEndRef} />
          </div>
 
-         <form onSubmit={handleSendMessage} className="border-t p-4">
+         <form onSubmit={handleSendMessage} className="p-4">
             <div className="flex">
                <textarea
-                  className="flex-1 border rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 border rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-black"
                   placeholder="Type a message..."
                   value={messageInput}
                   onChange={handleInputChange}
-                  rows={2}
+                  rows={1}
                />
-               <button
+               <Button
                   type="submit"
                   disabled={!messageInput.trim()}
-                  className="bg-blue-500 text-white px-4 rounded-r-lg disabled:bg-blue-300"
+                  className="rounded-l-none h-18"
                >
                   Send
-               </button>
+               </Button>
             </div>
          </form>
       </div>
