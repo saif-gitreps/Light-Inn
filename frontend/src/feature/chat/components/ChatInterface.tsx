@@ -19,6 +19,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
    const [messageInput, setMessageInput] = useState("");
    const messagesEndRef = useRef<HTMLDivElement>(null);
    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+   const processedMessageIds = useRef(new Set<string>());
 
    const {
       messages,
@@ -37,12 +38,24 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
    // Mark unread messages as read
    useEffect(() => {
       if (messages.length > 0) {
+         // Track which messages we've already processed to avoid loops
          const unreadMessages = messages
             .filter((msg: Message) => !msg.read && msg.sender._id !== currentUserId)
             .map((msg: Message) => msg._id);
 
          if (unreadMessages.length > 0) {
-            markAsRead.mutate(unreadMessages);
+            // Use a ref to track messages we've already processed
+            const messageIdsToMarkAsRead = unreadMessages.filter(
+               (id) => !processedMessageIds.current.has(id)
+            );
+
+            if (messageIdsToMarkAsRead.length > 0) {
+               // Add to processed set before making the API call
+               messageIdsToMarkAsRead.forEach((id) =>
+                  processedMessageIds.current.add(id)
+               );
+               markAsRead.mutate(messageIdsToMarkAsRead);
+            }
          }
       }
    }, [messages, currentUserId, markAsRead]);

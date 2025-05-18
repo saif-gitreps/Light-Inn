@@ -71,19 +71,24 @@ export default function initializeSocket(server: http.Server) {
                console.log(`Message from ${senderId} to ${receiverId}: ${content}`);
 
                // Find or create chat room
-               let chatRoom = await ChatRoom.findOne({
-                  participants: { $all: [senderId, receiverId] },
-               });
+               const participantIds = [senderId, receiverId].sort();
 
-               //console.log(chatRoom);
+               // Find or create chat room with exact match on sorted participants
+               let chatRoom = await ChatRoom.findOne({
+                  $and: [
+                     { participants: { $size: 2 } }, // Ensure exactly 2 participants
+                     { participants: { $all: participantIds } }, // Ensure it contains both users
+                  ],
+               });
 
                if (!chatRoom) {
                   chatRoom = await ChatRoom.create({
-                     participants: [senderId, receiverId],
+                     participants: participantIds, // Use sorted IDs
                      lastActivity: new Date(),
                   });
                } else {
                   chatRoom.lastActivity = new Date();
+                  await chatRoom.save();
                }
 
                console.log(chatRoom);

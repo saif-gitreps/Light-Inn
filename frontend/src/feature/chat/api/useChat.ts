@@ -156,8 +156,23 @@ export const useChatMessages = (userId?: string) => {
             { withCredentials: true }
          );
       },
-      onSuccess: () => {
-         queryClient.invalidateQueries({ queryKey: ["chatMessages", userId] });
+      onSuccess: (_, messageIds) => {
+         // Instead of refetching the entire list, update the cache directly
+         queryClient.setQueryData(
+            ["chatMessages", userId],
+            (oldData: { messages: Message[] } | undefined) => {
+               if (!oldData) return { messages: [] };
+
+               const updatedMessages = oldData.messages.map((msg: Message) => {
+                  if (messageIds.includes(msg._id)) {
+                     return { ...msg, read: true };
+                  }
+                  return msg;
+               });
+
+               return { ...oldData, messages: updatedMessages };
+            }
+         );
       },
    });
 

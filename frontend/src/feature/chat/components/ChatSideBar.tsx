@@ -30,10 +30,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ currentUserId }) => {
       return <div className="p-4 text-red-500">Error loading conversations</div>;
    }
 
+   console.log(rooms);
+
    // Find the other participant in each room (not the current user)
    const getChatPartner = (room: ChatRoom) => {
-      return room.participants[0]._id === userId &&
-         room.participants[0]._id !== currentUser?._id
+      return room.participants[0]._id !== currentUser?._id
          ? room.participants[0]
          : room.participants[1];
    };
