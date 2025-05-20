@@ -19,11 +19,13 @@ A full-featured, modern, end-to-end-tested, full-stack web application where use
    -  Confirm the booking and payment of their hotel.
    -  Add/Update a hotel for other customers.
    -  Check out their bookings and hotels.
+   -  Contact hotel owners in **realtime chat** and get more details.
 
 🔐 **Authentication and Security**
 
 -  Secure stateless **JWT** authentication using secure **HTTP-only cookies** for safe browsing.
 -  Secure transactions powered by **Stripe**.
+-  Secure websocket connection using http-cookie for realtime chat.
 
 💻 **Tech Stack and Features**
 
@@ -34,17 +36,17 @@ A full-featured, modern, end-to-end-tested, full-stack web application where use
 -  🌄 Paginated displays of hotels on the search results page with previous/next navigation.
 -  🚀 Efficient cache management and cache invalidation using **Tanstack React Query**.
 -  🖼️ Media management and storage using **multer** and **Cloudinary services**.
--  🦥 Lazy loading of images for fast and responsive rendering of bulk images using **React Lazy Load**.
+-  📜 Realtime chat feature using **Socket.io**.
+-  🦥 **Lazy loading** of images for fast and responsive rendering of bulk images using **React Lazy Load**.
 -  📁 Simple global Auth, Error, Success, and Search query state management using **React Context**.
 -  🥂 Beautiful handling of success and error messages using **Custom Toast Component**.
--  🛠  API input validation using **express-validator**.
+-  🛠 API input validation using **express-validator**.
 -  🔒 Route protection from unauthenticated requests.
--  🔬 Fully **end-to-end** tested using **Playwright** tests. 
--  🪵 Custom logger for monitoring requests in the development terminal.
+-  🔬 Fully **end-to-end** tested using **Playwright** tests.
+-  🪵 Custom **logger** for monitoring requests in the development terminal.
 -  🦦 Schema and queries built with **Mongoose** and **MongoDB**.
 
 🎁 **Additional Features**
 
 -  🔄 Highly customizable and extendable, with more features planned for future updates.
 -  📱 Fully responsive design for both mobile and desktop devices.
-
