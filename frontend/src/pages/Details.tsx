@@ -30,6 +30,7 @@ function Detail() {
                   ))}
                </span>
             </div>
+
             {!(currentUser?._id === hotel.userId) && (
                <Button variant="outline">
                   <Link to={`/chat/${hotel.userId}/Owner`}>Talk with the owner </Link>

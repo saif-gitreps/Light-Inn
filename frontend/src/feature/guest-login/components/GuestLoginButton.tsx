@@ -49,8 +49,8 @@ function GuestLoginButton({ children, className, variant }: GuestLoginButtonProp
          className={className}
          onClick={() =>
             onClick({
-               email: "test@test.com",
-               password: "123456",
+               email: "guest_lightin@gmail.com",
+               password: "1234567",
             })
          }
       >
